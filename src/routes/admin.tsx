@@ -9,7 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { StatsDashboard } from "@/components/admin/StatsDashboard";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { categoriesQuery, productsQuery, type Product } from "@/lib/queries";
@@ -122,67 +124,80 @@ function AdminDashboard({ email }: { email: string }) {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-card">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary text-left">
-            <tr>
-              <th className="p-3">Produit</th>
-              <th className="p-3">Catégorie</th>
-              <th className="p-3">Prix</th>
-              <th className="p-3">Stock</th>
-              <th className="p-3">Vedette</th>
-              <th className="p-3 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => {
-              const cat = categories.find((c) => c.id === p.category_id);
-              return (
-                <tr key={p.id} className="border-t">
-                  <td className="p-3">
-                    <div className="flex items-center gap-3">
-                      {p.images[0] && <img src={p.images[0]} alt="" className="h-10 w-10 rounded object-cover" />}
-                      <span className="font-medium">{p.name}</span>
-                    </div>
-                  </td>
-                  <td className="p-3 text-muted-foreground">{cat?.name ?? "—"}</td>
-                  <td className="p-3">{formatPrice(p.price)}</td>
-                  <td className="p-3">
-                    <span className={p.in_stock ? "text-emerald-600" : "text-destructive"}>
-                      {p.in_stock ? "Oui" : "Non"}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    <Button variant="ghost" size="icon" onClick={() => toggleFeatured(p)}>
-                      <Star className={`h-4 w-4 ${p.featured ? "fill-primary text-primary" : "text-muted-foreground"}`} />
-                    </Button>
-                  </td>
-                  <td className="p-3 text-right">
-                    <Button variant="ghost" size="icon" onClick={() => { setEditing(p); setOpen(true); }}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Supprimer ce produit ?</AlertDialogTitle>
-                          <AlertDialogDescription>Cette action est irréversible.</AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Annuler</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => remove(p)}>Supprimer</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </td>
+      <Tabs defaultValue="stats" className="w-full">
+        <TabsList className="mb-6">
+          <TabsTrigger value="stats" className="gap-2"><LayoutDashboard className="h-4 w-4" /> Tableau de bord</TabsTrigger>
+          <TabsTrigger value="products" className="gap-2"><Package className="h-4 w-4" /> Produits</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="stats">
+          <StatsDashboard />
+        </TabsContent>
+
+        <TabsContent value="products">
+          <div className="overflow-x-auto rounded-xl border bg-card">
+            <table className="w-full text-sm">
+              <thead className="bg-secondary text-left">
+                <tr>
+                  <th className="p-3">Produit</th>
+                  <th className="p-3">Catégorie</th>
+                  <th className="p-3">Prix</th>
+                  <th className="p-3">Stock</th>
+                  <th className="p-3">Vedette</th>
+                  <th className="p-3 text-right">Actions</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {products.map((p) => {
+                  const cat = categories.find((c) => c.id === p.category_id);
+                  return (
+                    <tr key={p.id} className="border-t">
+                      <td className="p-3">
+                        <div className="flex items-center gap-3">
+                          {p.images[0] && <img src={p.images[0]} alt="" className="h-10 w-10 rounded object-cover" />}
+                          <span className="font-medium">{p.name}</span>
+                        </div>
+                      </td>
+                      <td className="p-3 text-muted-foreground">{cat?.name ?? "—"}</td>
+                      <td className="p-3">{formatPrice(p.price)}</td>
+                      <td className="p-3">
+                        <span className={p.in_stock ? "text-emerald-600" : "text-destructive"}>
+                          {p.in_stock ? "Oui" : "Non"}
+                        </span>
+                      </td>
+                      <td className="p-3">
+                        <Button variant="ghost" size="icon" onClick={() => toggleFeatured(p)}>
+                          <Star className={`h-4 w-4 ${p.featured ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+                        </Button>
+                      </td>
+                      <td className="p-3 text-right">
+                        <Button variant="ghost" size="icon" onClick={() => { setEditing(p); setOpen(true); }}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Supprimer ce produit ?</AlertDialogTitle>
+                              <AlertDialogDescription>Cette action est irréversible.</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Annuler</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => remove(p)}>Supprimer</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
