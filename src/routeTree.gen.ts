@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CatalogueRouteImport } from './routes/catalogue'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProduitSlugRouteImport } from './routes/produit.$slug'
@@ -23,6 +25,16 @@ const ContactRoute = ContactRouteImport.update({
 const CatalogueRoute = CatalogueRouteImport.update({
   id: '/catalogue',
   path: '/catalogue',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AProposRoute = AProposRouteImport.update({
@@ -44,6 +56,8 @@ const ProduitSlugRoute = ProduitSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/catalogue': typeof CatalogueRoute
   '/contact': typeof ContactRoute
   '/produit/$slug': typeof ProduitSlugRoute
@@ -51,6 +65,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/catalogue': typeof CatalogueRoute
   '/contact': typeof ContactRoute
   '/produit/$slug': typeof ProduitSlugRoute
@@ -59,19 +75,37 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/catalogue': typeof CatalogueRoute
   '/contact': typeof ContactRoute
   '/produit/$slug': typeof ProduitSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/a-propos' | '/catalogue' | '/contact' | '/produit/$slug'
+  fullPaths:
+    | '/'
+    | '/a-propos'
+    | '/admin'
+    | '/auth'
+    | '/catalogue'
+    | '/contact'
+    | '/produit/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/a-propos' | '/catalogue' | '/contact' | '/produit/$slug'
+  to:
+    | '/'
+    | '/a-propos'
+    | '/admin'
+    | '/auth'
+    | '/catalogue'
+    | '/contact'
+    | '/produit/$slug'
   id:
     | '__root__'
     | '/'
     | '/a-propos'
+    | '/admin'
+    | '/auth'
     | '/catalogue'
     | '/contact'
     | '/produit/$slug'
@@ -80,6 +114,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
+  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
   CatalogueRoute: typeof CatalogueRoute
   ContactRoute: typeof ContactRoute
   ProduitSlugRoute: typeof ProduitSlugRoute
@@ -99,6 +135,20 @@ declare module '@tanstack/react-router' {
       path: '/catalogue'
       fullPath: '/catalogue'
       preLoaderRoute: typeof CatalogueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/a-propos': {
@@ -128,6 +178,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
+  AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
   CatalogueRoute: CatalogueRoute,
   ContactRoute: ContactRoute,
   ProduitSlugRoute: ProduitSlugRoute,
