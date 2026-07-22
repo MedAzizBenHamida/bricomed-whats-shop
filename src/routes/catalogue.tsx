@@ -70,13 +70,13 @@ function CataloguePage() {
             value={term}
             onChange={(e) => {
               setTerm(e.target.value);
-              navigate({ search: (s) => ({ ...s, q: e.target.value || undefined }), replace: true });
+              navigate({ search: (s: { cat?: string; q?: string; sort?: "name-asc" | "price-asc" | "price-desc" }) => ({ ...s, q: e.target.value || undefined }), replace: true });
             }}
           />
         </div>
         <Select
           value={cat ?? "all"}
-          onValueChange={(v) => navigate({ search: (s) => ({ ...s, cat: v === "all" ? undefined : v }) })}
+          onValueChange={(v) => navigate({ search: (s: { cat?: string; q?: string; sort?: "name-asc" | "price-asc" | "price-desc" }) => ({ ...s, cat: v === "all" ? undefined : v }) })}
         >
           <SelectTrigger><SelectValue placeholder="Catégorie" /></SelectTrigger>
           <SelectContent>
@@ -88,7 +88,7 @@ function CataloguePage() {
         </Select>
         <Select
           value={sort ?? "default"}
-          onValueChange={(v) => navigate({ search: (s) => ({ ...s, sort: v === "default" ? undefined : (v as "name-asc" | "price-asc" | "price-desc") }) })}
+          onValueChange={(v) => navigate({ search: (s: { cat?: string; q?: string; sort?: "name-asc" | "price-asc" | "price-desc" }) => ({ ...s, sort: v === "default" ? undefined : (v as "name-asc" | "price-asc" | "price-desc") }) })}
         >
           <SelectTrigger><SelectValue placeholder="Trier par" /></SelectTrigger>
           <SelectContent>
