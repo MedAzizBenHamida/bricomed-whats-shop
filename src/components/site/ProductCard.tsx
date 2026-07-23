@@ -45,12 +45,13 @@ export function ProductCard({ product }: { product: Product }) {
           <Button
             size="sm"
             className="flex-1"
+            disabled={product.stock_quantity <= 0}
             onClick={() => {
               add({ id: product.id, slug: product.slug, name: product.name, price: product.price, image: img });
               toast.success(`${product.name} ajouté au panier`);
             }}
           >
-            <ShoppingCart className="h-4 w-4" /> Ajouter
+            <ShoppingCart className="h-4 w-4" /> {product.stock_quantity <= 0 ? "Indisponible" : "Ajouter"}
           </Button>
         </div>
       </div>

@@ -67,10 +67,14 @@ function ProductPage() {
         <div>
           <h1 className="font-display text-3xl font-bold md:text-4xl">{product.name}</h1>
           <div className="mt-2 flex items-center gap-3">
-            {product.in_stock ? (
-              <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600"><CheckCircle2 className="h-4 w-4" /> En stock</span>
+            {product.stock_quantity > 0 ? (
+              <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600">
+                <CheckCircle2 className="h-4 w-4" /> En stock ({product.stock_quantity} disponible{product.stock_quantity > 1 ? "s" : ""})
+              </span>
             ) : (
-              <span className="inline-flex items-center gap-1 text-sm font-medium text-destructive"><XCircle className="h-4 w-4" /> Indisponible</span>
+              <span className="inline-flex items-center gap-1 text-sm font-medium text-destructive">
+                <XCircle className="h-4 w-4" /> Momentanément indisponible
+              </span>
             )}
           </div>
           <div className="mt-4 font-display text-4xl font-bold text-primary">{formatPrice(product.price)}</div>
@@ -92,13 +96,13 @@ function ProductPage() {
           <Button
             size="lg"
             className="mt-8 w-full sm:w-auto"
-            disabled={!product.in_stock}
+            disabled={product.stock_quantity <= 0}
             onClick={() => {
               add({ id: product.id, slug: product.slug, name: product.name, price: product.price, image: images[0] });
               toast.success(`${product.name} ajouté au panier`);
             }}
           >
-            <ShoppingCart className="h-5 w-5" /> Ajouter au panier
+            <ShoppingCart className="h-5 w-5" /> {product.stock_quantity <= 0 ? "Momentanément indisponible" : "Ajouter au panier"}
           </Button>
         </div>
       </div>

@@ -9,12 +9,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package, ShoppingCart, Boxes } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { StatsDashboard } from "@/components/admin/StatsDashboard";
+import { OrdersTab } from "@/components/admin/OrdersTab";
+import { StockTab } from "@/components/admin/StockTab";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { categoriesQuery, productsQuery, type Product } from "@/lib/queries";
+import { categoriesQuery, productsQuery, ordersQuery, type Product } from "@/lib/queries";
 import { formatPrice } from "@/lib/constants";
 import type { User } from "@supabase/supabase-js";
 
@@ -38,10 +41,7 @@ function AdminPage() {
       const { data } = await supabase.auth.getUser();
       if (!data.user) return nav({ to: "/auth" });
       setUser(data.user);
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", data.user.id);
+      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
       setIsAdmin(!!roles?.some((r) => (r as { role: string }).role === "admin"));
     })();
   }, [nav]);
@@ -78,8 +78,11 @@ function AdminDashboard({ email }: { email: string }) {
   const qc = useQueryClient();
   const { data: products = [] } = useQuery(productsQuery);
   const { data: categories = [] } = useQuery(categoriesQuery);
+  const { data: orders = [] } = useQuery(ordersQuery);
   const [editing, setEditing] = useState<Product | null>(null);
   const [open, setOpen] = useState(false);
+
+  const pendingCount = orders.filter((o) => o.status === "pending").length;
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["products"] });
@@ -113,6 +116,7 @@ function AdminDashboard({ email }: { email: string }) {
               <Button onClick={() => setEditing(null)}><Plus className="h-4 w-4" /> Nouveau produit</Button>
             </DialogTrigger>
             <ProductDialog
+              key={editing?.id ?? "new"}
               product={editing}
               categories={categories}
               onDone={() => { setOpen(false); setEditing(null); refresh(); }}
@@ -125,14 +129,19 @@ function AdminDashboard({ email }: { email: string }) {
       </div>
 
       <Tabs defaultValue="stats" className="w-full">
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 flex-wrap">
           <TabsTrigger value="stats" className="gap-2"><LayoutDashboard className="h-4 w-4" /> Tableau de bord</TabsTrigger>
+          <TabsTrigger value="orders" className="gap-2">
+            <ShoppingCart className="h-4 w-4" /> Commandes
+            {pendingCount > 0 && <Badge variant="secondary" className="ml-1">{pendingCount}</Badge>}
+          </TabsTrigger>
+          <TabsTrigger value="stock" className="gap-2"><Boxes className="h-4 w-4" /> Stock</TabsTrigger>
           <TabsTrigger value="products" className="gap-2"><Package className="h-4 w-4" /> Produits</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="stats">
-          <StatsDashboard />
-        </TabsContent>
+        <TabsContent value="stats"><StatsDashboard /></TabsContent>
+        <TabsContent value="orders"><OrdersTab /></TabsContent>
+        <TabsContent value="stock"><StockTab /></TabsContent>
 
         <TabsContent value="products">
           <div className="overflow-x-auto rounded-xl border bg-card">
@@ -150,6 +159,8 @@ function AdminDashboard({ email }: { email: string }) {
               <tbody>
                 {products.map((p) => {
                   const cat = categories.find((c) => c.id === p.category_id);
+                  const isOut = p.stock_quantity <= 0;
+                  const isLow = !isOut && p.stock_quantity <= p.low_stock_threshold;
                   return (
                     <tr key={p.id} className="border-t">
                       <td className="p-3">
@@ -161,9 +172,11 @@ function AdminDashboard({ email }: { email: string }) {
                       <td className="p-3 text-muted-foreground">{cat?.name ?? "—"}</td>
                       <td className="p-3">{formatPrice(p.price)}</td>
                       <td className="p-3">
-                        <span className={p.in_stock ? "text-emerald-600" : "text-destructive"}>
-                          {p.in_stock ? "Oui" : "Non"}
+                        <span className={`font-semibold ${isOut ? "text-destructive" : isLow ? "text-amber-600" : "text-emerald-600"}`}>
+                          {p.stock_quantity}
                         </span>
+                        {isOut && <Badge variant="destructive" className="ml-2">Rupture</Badge>}
+                        {isLow && <Badge variant="secondary" className="ml-2">Faible</Badge>}
                       </td>
                       <td className="p-3">
                         <Button variant="ghost" size="icon" onClick={() => toggleFeatured(p)}>
@@ -213,7 +226,8 @@ function ProductDialog({ product, categories, onDone }: { product: Product | nul
     category_id: product?.category_id ?? "",
     images: (product?.images ?? []).join("\n"),
     features: (product?.features ?? []).join("\n"),
-    in_stock: product?.in_stock ?? true,
+    stock_quantity: product?.stock_quantity ?? 0,
+    low_stock_threshold: product?.low_stock_threshold ?? 5,
     featured: product?.featured ?? false,
   }));
   const [saving, setSaving] = useState(false);
@@ -232,7 +246,8 @@ function ProductDialog({ product, categories, onDone }: { product: Product | nul
       category_id: form.category_id || null,
       images: form.images.split("\n").map((s) => s.trim()).filter(Boolean),
       features: form.features.split("\n").map((s) => s.trim()).filter(Boolean),
-      in_stock: form.in_stock,
+      stock_quantity: Math.max(0, Number(form.stock_quantity)),
+      low_stock_threshold: Math.max(0, Number(form.low_stock_threshold)),
       featured: form.featured,
     };
     const res = product
@@ -272,6 +287,14 @@ function ProductDialog({ product, categories, onDone }: { product: Product | nul
               </SelectContent>
             </Select>
           </div>
+          <div>
+            <Label>Quantité en stock</Label>
+            <Input type="number" min={0} value={form.stock_quantity} onChange={(e) => setForm({ ...form, stock_quantity: Number(e.target.value) })} />
+          </div>
+          <div>
+            <Label>Seuil d'alerte stock faible</Label>
+            <Input type="number" min={0} value={form.low_stock_threshold} onChange={(e) => setForm({ ...form, low_stock_threshold: Number(e.target.value) })} />
+          </div>
         </div>
         <div>
           <Label>Description courte</Label>
@@ -290,10 +313,6 @@ function ProductDialog({ product, categories, onDone }: { product: Product | nul
           <Textarea rows={3} value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} />
         </div>
         <div className="flex flex-wrap gap-6">
-          <label className="flex items-center gap-2">
-            <Switch checked={form.in_stock} onCheckedChange={(v) => setForm({ ...form, in_stock: v })} />
-            <span className="text-sm">En stock</span>
-          </label>
           <label className="flex items-center gap-2">
             <Switch checked={form.featured} onCheckedChange={(v) => setForm({ ...form, featured: v })} />
             <span className="text-sm">Mettre en vedette</span>
