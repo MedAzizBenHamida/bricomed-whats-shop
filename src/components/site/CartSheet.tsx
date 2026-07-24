@@ -30,6 +30,8 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       toast.error("Nom et téléphone requis");
       return;
     }
+    // Ouvre la fenêtre de façon synchrone pour éviter le blocage popup après await
+    const waWindow = window.open("about:blank", "_blank");
     setSending(true);
     const { data: order, error } = await supabase
       .from("orders")
@@ -44,6 +46,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       .single();
     if (error || !order) {
       setSending(false);
+      if (waWindow && !waWindow.closed) waWindow.close();
       toast.error("Impossible d'enregistrer la commande");
       return;
     }
@@ -55,7 +58,13 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       quantity: i.qty,
     }));
     await supabase.from("order_items").insert(payload);
-    window.open(waLink(buildMessage(order.id)), "_blank");
+    const url = waLink(buildMessage(order.id));
+    if (waWindow && !waWindow.closed) {
+      waWindow.location.href = url;
+    } else {
+      // Fallback : la popup a été bloquée, on redirige l'onglet courant
+      window.location.href = url;
+    }
     setSending(false);
     clear();
     setName(""); setPhone(""); setAddress(""); setNotes("");
