@@ -17,6 +17,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
 
   const buildMessage = (orderId?: string) => {
     const lines = items.map((i) => `• ${i.name} x${i.qty} : ${formatPrice(i.qty * i.price)}`).join("\n");
@@ -30,8 +31,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       toast.error("Nom et téléphone requis");
       return;
     }
-    // Ouvre la fenêtre de façon synchrone pour éviter le blocage popup après await
-    const waWindow = window.open("about:blank", "_blank");
+    setWhatsappUrl(null);
     setSending(true);
     const { data: order, error } = await supabase
       .from("orders")
@@ -46,7 +46,6 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       .single();
     if (error || !order) {
       setSending(false);
-      if (waWindow && !waWindow.closed) waWindow.close();
       toast.error("Impossible d'enregistrer la commande");
       return;
     }
@@ -59,17 +58,11 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     }));
     await supabase.from("order_items").insert(payload);
     const url = waLink(buildMessage(order.id));
-    if (waWindow && !waWindow.closed) {
-      waWindow.location.href = url;
-    } else {
-      // Fallback : la popup a été bloquée, on redirige l'onglet courant
-      window.location.href = url;
-    }
+    setWhatsappUrl(url);
     setSending(false);
     clear();
     setName(""); setPhone(""); setAddress(""); setNotes("");
-    onOpenChange(false);
-    toast.success("Commande enregistrée — en attente de confirmation");
+    toast.success("Commande enregistrée — cliquez sur Ouvrir WhatsApp");
   };
 
   return (
@@ -144,6 +137,13 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
             <Button size="lg" className="w-full" disabled={sending} onClick={submit}>
               <MessageCircle className="h-5 w-5" /> {sending ? "Envoi…" : "Commander via WhatsApp"}
             </Button>
+            {whatsappUrl && (
+              <Button asChild size="lg" variant="outline" className="w-full">
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={() => onOpenChange(false)}>
+                  <MessageCircle className="h-5 w-5" /> Ouvrir WhatsApp
+                </a>
+              </Button>
+            )}
             <Button variant="ghost" size="sm" onClick={clear}>Vider le panier</Button>
           </SheetFooter>
         )}
