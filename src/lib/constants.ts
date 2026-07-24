@@ -13,7 +13,8 @@ export const SHOP = {
 };
 
 export function waLink(text: string) {
-  return `https://wa.me/${SHOP.whatsapp}?text=${encodeURIComponent(text)}`;
+  const phone = SHOP.whatsapp.replace(/\D/g, "");
+  return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 }
 
 export function formatPrice(n: number) {
