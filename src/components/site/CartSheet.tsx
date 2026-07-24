@@ -60,8 +60,6 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     const url = waLink(buildMessage(order.id));
     setWhatsappUrl(url);
     setSending(false);
-    clear();
-    setName(""); setPhone(""); setAddress(""); setNotes("");
     toast.success("Commande enregistrée — cliquez sur Ouvrir WhatsApp");
   };
 
@@ -134,12 +132,25 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
               <span className="text-sm text-muted-foreground">Total</span>
               <span className="font-display text-2xl font-bold">{formatPrice(total)}</span>
             </div>
-            <Button size="lg" className="w-full" disabled={sending} onClick={submit}>
-              <MessageCircle className="h-5 w-5" /> {sending ? "Envoi…" : "Commander via WhatsApp"}
+            <Button size="lg" className="w-full" disabled={sending || !!whatsappUrl} onClick={submit}>
+              <MessageCircle className="h-5 w-5" /> {sending ? "Envoi…" : whatsappUrl ? "Commande enregistrée" : "Commander via WhatsApp"}
             </Button>
             {whatsappUrl && (
               <Button asChild size="lg" variant="outline" className="w-full">
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={() => onOpenChange(false)}>
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    clear();
+                    setName("");
+                    setPhone("");
+                    setAddress("");
+                    setNotes("");
+                    setWhatsappUrl(null);
+                    onOpenChange(false);
+                  }}
+                >
                   <MessageCircle className="h-5 w-5" /> Ouvrir WhatsApp
                 </a>
               </Button>
