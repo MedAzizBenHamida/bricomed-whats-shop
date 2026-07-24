@@ -17,7 +17,6 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
-  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
 
   const buildMessage = (orderId?: string) => {
     const lines = items.map((i) => `• ${i.name} x${i.qty} : ${formatPrice(i.qty * i.price)}`).join("\n");
@@ -31,8 +30,8 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       toast.error("Nom et téléphone requis");
       return;
     }
-    setWhatsappUrl(null);
     setSending(true);
+    const popup = window.open("", "_blank");
     const { data: order, error } = await supabase
       .from("orders")
       .insert({
@@ -46,6 +45,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       .single();
     if (error || !order) {
       setSending(false);
+      popup?.close();
       toast.error("Impossible d'enregistrer la commande");
       return;
     }
@@ -58,9 +58,16 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     }));
     await supabase.from("order_items").insert(payload);
     const url = waLink(buildMessage(order.id));
-    setWhatsappUrl(url);
+    if (popup && !popup.closed) popup.location.href = url;
+    else window.open(url, "_blank", "noopener,noreferrer");
+    toast.success("Commande envoyée sur WhatsApp");
+    clear();
+    setName("");
+    setPhone("");
+    setAddress("");
+    setNotes("");
     setSending(false);
-    toast.success("Commande enregistrée — cliquez sur Ouvrir WhatsApp");
+    onOpenChange(false);
   };
 
   return (
