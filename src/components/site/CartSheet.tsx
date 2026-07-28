@@ -33,10 +33,12 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
 
     const orderId = globalThis.crypto?.randomUUID?.();
     const url = waLink(buildMessage(orderId));
-    const whatsappWindow = window.open(url, "_blank", "noopener,noreferrer");
+    const whatsappWindow = window.open(url, "_blank");
 
-    if (!whatsappWindow) {
-      window.location.assign(url);
+    if (whatsappWindow) {
+      whatsappWindow.opener = null;
+    } else {
+      toast.error("Le navigateur a bloqué l'ouverture de WhatsApp. Autorisez les popups pour ce site.");
       return;
     }
 
