@@ -120,6 +120,35 @@ export function OrdersTab() {
                     </Button>
                   </div>
                 )}
+                <div className="flex flex-wrap gap-2">
+                  {o.status === "confirmed" && (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() =>
+                        openWhatsApp(
+                          o,
+                          `Bonjour ${o.customer_name} 👋,\n\nNous avons le plaisir de vous informer que votre commande #${orderRef(o.id)} a bien été confirmée.\n\n📦 Elle est actuellement en préparation.\n💰 Montant total : ${Number(o.total).toFixed(3).replace(/\.?0+$/, "")} DT.\n\nNous vous contacterons dès qu'elle sera prête.\n\nMerci pour votre confiance.\nL'équipe Quicaillerie.`,
+                        )
+                      }
+                    >
+                      <MessageCircle className="h-4 w-4" /> 📱 Informer le client
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      openWhatsApp(
+                        o,
+                        `Bonjour ${o.customer_name},\n\nNous sommes désolés.\nVotre commande #${orderRef(o.id)} ne peut malheureusement pas être validée car un ou plusieurs produits sont actuellement indisponibles.\n\nMerci de nous contacter afin que nous puissions vous proposer une solution ou un produit de remplacement.\n\nNous vous remercions de votre compréhension.\nL'équipe Quicaillerie.`,
+                      )
+                    }
+                  >
+                    <MessageCircle className="h-4 w-4" /> ❌ Informer d'une indisponibilité
+                  </Button>
+                </div>
+
               </CardContent>
             </Card>
           );
