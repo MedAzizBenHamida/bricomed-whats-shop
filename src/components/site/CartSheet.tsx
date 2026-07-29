@@ -28,7 +28,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   };
 
   const submit = async () => {
-    if (!name.trim() || !phone.trim() || !address.trim()) {
+    if (!name.trim() || !phoneNumber.trim() || !address.trim()) {
       toast.error("Nom, téléphone et adresse requis");
       return;
     }
