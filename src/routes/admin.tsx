@@ -71,7 +71,7 @@ function AdminPage() {
     );
   }
 
-  return <AdminDashboard email={user.email ?? ""} />;
+  return <AdminDashboard email={user.email ?? ""} userId={user.id} />;
 }
 
 function AdminDashboard({ email }: { email: string }) {
