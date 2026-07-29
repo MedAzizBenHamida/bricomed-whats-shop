@@ -138,11 +138,14 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
           </TabsTrigger>
           <TabsTrigger value="stock" className="gap-2"><Boxes className="h-4 w-4" /> Stock</TabsTrigger>
           <TabsTrigger value="products" className="gap-2"><Package className="h-4 w-4" /> Produits</TabsTrigger>
+          <TabsTrigger value="profile" className="gap-2"><UserCog className="h-4 w-4" /> Profil</TabsTrigger>
         </TabsList>
 
         <TabsContent value="stats"><StatsDashboard /></TabsContent>
         <TabsContent value="orders"><OrdersTab /></TabsContent>
         <TabsContent value="stock"><StockTab /></TabsContent>
+        <TabsContent value="profile"><ProfileTab email={email} userId={userId} /></TabsContent>
+
 
         <TabsContent value="products">
           <div className="overflow-x-auto rounded-xl border bg-card">
