@@ -13,10 +13,12 @@ import { toast } from "sonner";
 export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const { items, setQty, remove, clear, total } = useCart();
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("+216");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
+
+  const fullPhone = `+216${phoneNumber.trim()}`;
 
   const buildMessage = (orderId?: string) => {
     const lines = items.map((i) => `• ${i.name} x${i.qty} : ${formatPrice(i.qty * i.price)}`).join("\n");
