@@ -50,7 +50,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       .insert({
         ...(orderId ? { id: orderId } : {}),
         customer_name: name.trim(),
-        customer_phone: phone.trim(),
+        customer_phone: fullPhone,
         customer_address: address.trim() || null,
         notes: notes.trim() || null,
         total,
