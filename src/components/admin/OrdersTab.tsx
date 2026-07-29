@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle2, XCircle, ChevronDown, ChevronUp, Phone } from "lucide-react";
+import { CheckCircle2, XCircle, ChevronDown, ChevronUp, Phone, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
 const statusLabel = { pending: "En attente", confirmed: "Confirmée", cancelled: "Annulée" } as const;
