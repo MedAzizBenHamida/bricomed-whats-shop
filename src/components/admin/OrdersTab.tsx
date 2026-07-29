@@ -12,6 +12,25 @@ import { toast } from "sonner";
 
 const statusLabel = { pending: "En attente", confirmed: "Confirmée", cancelled: "Annulée" } as const;
 
+function normalizePhone(raw: string | null | undefined) {
+  const digits = (raw ?? "").replace(/\D/g, "").replace(/^0+/, "");
+  if (digits.length === 8) return `216${digits}`;
+  return digits.length >= 8 ? digits : null;
+}
+
+function orderRef(id: string) {
+  return id.slice(0, 8).toUpperCase();
+}
+
+function openWhatsApp(o: Order, message: string) {
+  const phone = normalizePhone(o.customer_phone);
+  if (!phone) {
+    toast.error("Numéro du client vide ou invalide — impossible d'ouvrir WhatsApp.");
+    return;
+  }
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+}
+
 export function OrdersTab() {
   const qc = useQueryClient();
   const { data: orders = [] } = useQuery(ordersQuery);
