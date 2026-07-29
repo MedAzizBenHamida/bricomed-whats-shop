@@ -13,20 +13,22 @@ import { toast } from "sonner";
 export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const { items, setQty, remove, clear, total } = useCart();
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("+216");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
 
+  const fullPhone = `+216${phoneNumber.trim()}`;
+
   const buildMessage = (orderId?: string) => {
     const lines = items.map((i) => `• ${i.name} x${i.qty} : ${formatPrice(i.qty * i.price)}`).join("\n");
     const ref = orderId ? `\nRéf. commande : ${orderId.slice(0, 8).toUpperCase()}\n` : "";
-    const infos = `\nNom : ${name}\nTéléphone : ${phone}${address ? `\nAdresse : ${address}` : ""}${notes ? `\nNotes : ${notes}` : ""}`;
+    const infos = `\nNom : ${name}\nTéléphone : ${fullPhone}${address ? `\nAdresse : ${address}` : ""}${notes ? `\nNotes : ${notes}` : ""}`;
     return `Bonjour ${SHOP.name},\n\nJe souhaite commander :\n\n${lines}\n\nTotal : ${formatPrice(total)}${ref}${infos}\n\nMerci de confirmer la disponibilité.`;
   };
 
   const submit = async () => {
-    if (!name.trim() || !phone.trim() || !address.trim()) {
+    if (!name.trim() || !phoneNumber.trim() || !address.trim()) {
       toast.error("Nom, téléphone et adresse requis");
       return;
     }
@@ -48,7 +50,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       .insert({
         ...(orderId ? { id: orderId } : {}),
         customer_name: name.trim(),
-        customer_phone: phone.trim(),
+        customer_phone: fullPhone,
         customer_address: address.trim() || null,
         notes: notes.trim() || null,
         total,
@@ -71,7 +73,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     toast.success("Commande envoyée sur WhatsApp");
     clear();
     setName("");
-    setPhone("+216");
+    setPhoneNumber("");
     setAddress("");
     setNotes("");
     setSending(false);
@@ -125,12 +127,22 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                   <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nom complet" />
                 </div>
                 <div>
-                  <Label>Téléphone</Label>
-                  <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+216..." />
+                  <Label htmlFor="phone">Téléphone *</Label>
+                  <div className="flex items-center overflow-hidden rounded-md border focus-within:ring-1 focus-within:ring-ring">
+                    <span className="border-r bg-muted px-3 py-2 text-sm font-medium text-muted-foreground">+216</span>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                      placeholder="00 000 000"
+                      className="border-0 focus-visible:ring-0"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <Label htmlFor="address">Adresse *</Label>
-                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rue, ville, code postal" />
+                  <Label htmlFor="address">Ville et rue *</Label>
+                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Ville, rue" />
                 </div>
                 <div>
                   <Label>Notes (optionnel)</Label>
