@@ -7,10 +7,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle2, XCircle, ChevronDown, ChevronUp, Phone } from "lucide-react";
+import { CheckCircle2, XCircle, ChevronDown, ChevronUp, Phone, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
 const statusLabel = { pending: "En attente", confirmed: "Confirmée", cancelled: "Annulée" } as const;
+
+function normalizePhone(raw: string | null | undefined) {
+  const digits = (raw ?? "").replace(/\D/g, "").replace(/^0+/, "");
+  if (digits.length === 8) return `216${digits}`;
+  return digits.length >= 8 ? digits : null;
+}
+
+function orderRef(id: string) {
+  return id.slice(0, 8).toUpperCase();
+}
+
+function openWhatsApp(o: Order, message: string) {
+  const phone = normalizePhone(o.customer_phone);
+  if (!phone) {
+    toast.error("Numéro du client vide ou invalide — impossible d'ouvrir WhatsApp.");
+    return;
+  }
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+}
 
 export function OrdersTab() {
   const qc = useQueryClient();
@@ -101,6 +120,35 @@ export function OrdersTab() {
                     </Button>
                   </div>
                 )}
+                <div className="flex flex-wrap gap-2">
+                  {o.status === "confirmed" && (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() =>
+                        openWhatsApp(
+                          o,
+                          `Bonjour ${o.customer_name} 👋,\n\nNous avons le plaisir de vous informer que votre commande #${orderRef(o.id)} a bien été confirmée.\n\n📦 Elle est actuellement en préparation.\n💰 Montant total : ${Number(o.total).toFixed(3).replace(/\.?0+$/, "")} DT.\n\nNous vous contacterons dès qu'elle sera prête.\n\nMerci pour votre confiance.\nL'équipe Quicaillerie.`,
+                        )
+                      }
+                    >
+                      <MessageCircle className="h-4 w-4" /> 📱 Informer le client
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      openWhatsApp(
+                        o,
+                        `Bonjour ${o.customer_name},\n\nNous sommes désolés.\nVotre commande #${orderRef(o.id)} ne peut malheureusement pas être validée car un ou plusieurs produits sont actuellement indisponibles.\n\nMerci de nous contacter afin que nous puissions vous proposer une solution ou un produit de remplacement.\n\nNous vous remercions de votre compréhension.\nL'équipe Quicaillerie.`,
+                      )
+                    }
+                  >
+                    <MessageCircle className="h-4 w-4" /> ❌ Informer d'une indisponibilité
+                  </Button>
+                </div>
+
               </CardContent>
             </Card>
           );
