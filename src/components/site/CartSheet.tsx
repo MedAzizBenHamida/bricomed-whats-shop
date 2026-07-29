@@ -127,12 +127,22 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                   <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nom complet" />
                 </div>
                 <div>
-                  <Label>Téléphone</Label>
-                  <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+216..." />
+                  <Label htmlFor="phone">Téléphone *</Label>
+                  <div className="flex items-center overflow-hidden rounded-md border focus-within:ring-1 focus-within:ring-ring">
+                    <span className="border-r bg-muted px-3 py-2 text-sm font-medium text-muted-foreground">+216</span>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                      placeholder="00 000 000"
+                      className="border-0 focus-visible:ring-0"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <Label htmlFor="address">Adresse *</Label>
-                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rue, ville, code postal" />
+                  <Label htmlFor="address">Ville et rue *</Label>
+                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Ville, rue" />
                 </div>
                 <div>
                   <Label>Notes (optionnel)</Label>
