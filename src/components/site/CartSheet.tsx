@@ -73,7 +73,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     toast.success("Commande envoyée sur WhatsApp");
     clear();
     setName("");
-    setPhone("+216");
+    setPhoneNumber("");
     setAddress("");
     setNotes("");
     setSending(false);
