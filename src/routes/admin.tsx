@@ -74,7 +74,7 @@ function AdminPage() {
   return <AdminDashboard email={user.email ?? ""} userId={user.id} />;
 }
 
-function AdminDashboard({ email }: { email: string }) {
+function AdminDashboard({ email, userId }: { email: string; userId: string }) {
   const nav = useNavigate();
   const qc = useQueryClient();
   const { data: products = [] } = useQuery(productsQuery);
