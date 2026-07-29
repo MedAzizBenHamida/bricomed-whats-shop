@@ -13,7 +13,7 @@ import { toast } from "sonner";
 export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const { items, setQty, remove, clear, total } = useCart();
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+216");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
@@ -26,8 +26,8 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   };
 
   const submit = async () => {
-    if (!name.trim() || !phone.trim()) {
-      toast.error("Nom et téléphone requis");
+    if (!name.trim() || !phone.trim() || !address.trim()) {
+      toast.error("Nom, téléphone et adresse requis");
       return;
     }
 
@@ -71,7 +71,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     toast.success("Commande envoyée sur WhatsApp");
     clear();
     setName("");
-    setPhone("");
+    setPhone("+216");
     setAddress("");
     setNotes("");
     setSending(false);
@@ -129,8 +129,8 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                   <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+216..." />
                 </div>
                 <div>
-                  <Label>Adresse (optionnel)</Label>
-                  <Input value={address} onChange={(e) => setAddress(e.target.value)} />
+                  <Label htmlFor="address">Adresse *</Label>
+                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rue, ville, code postal" />
                 </div>
                 <div>
                   <Label>Notes (optionnel)</Label>
