@@ -24,7 +24,10 @@ export type Product = {
   featured: boolean;
   stock_quantity: number;
   low_stock_threshold: number;
+  last_modified_by?: string | null;
+  last_modified_at?: string | null;
 };
+
 
 export type OrderStatus = "pending" | "confirmed" | "cancelled";
 
