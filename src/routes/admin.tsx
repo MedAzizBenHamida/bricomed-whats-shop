@@ -85,13 +85,34 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
   const { data: orders = [] } = useQuery(ordersQuery);
   const [editing, setEditing] = useState<Product | null>(null);
   const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState(email.split("@")[0] ?? "admin");
+
+  useEffect(() => {
+    (async () => {
+      const name = await ensureProfile(userId, email);
+      setUsername(name);
+      const key = `bricomed-login-logged-${userId}`;
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+      logActivity({ action: "Connexion", entityType: "Administration", entityName: name, entityId: userId });
+    })();
+  }, [userId, email]);
 
   const pendingCount = orders.filter((o) => o.status === "pending").length;
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["products"] });
     qc.invalidateQueries({ queryKey: ["categories"] });
+    qc.invalidateQueries({ queryKey: ["activity_logs"] });
   };
+
+  const signOut = async () => {
+    await logActivity({ action: "Déconnexion", entityType: "Administration", entityName: username, entityId: userId });
+    sessionStorage.removeItem(`bricomed-login-logged-${userId}`);
+    await supabase.auth.signOut();
+    nav({ to: "/auth" });
+  };
+
 
   const toggleFeatured = async (p: Product) => {
     const { error } = await supabase
