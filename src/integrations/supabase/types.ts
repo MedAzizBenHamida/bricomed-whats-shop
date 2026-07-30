@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          admin_id: string | null
+          admin_username: string
+          created_at: string
+          entity_id: string | null
+          entity_name: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          new_value: string | null
+          old_value: string | null
+        }
+        Insert: {
+          action: string
+          admin_id?: string | null
+          admin_username?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          new_value?: string | null
+          old_value?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          admin_username?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          new_value?: string | null
+          old_value?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -138,6 +180,8 @@ export type Database = {
           id: string
           images: string[]
           in_stock: boolean
+          last_modified_at: string | null
+          last_modified_by: string | null
           low_stock_threshold: number
           name: string
           price: number
@@ -155,6 +199,8 @@ export type Database = {
           id?: string
           images?: string[]
           in_stock?: boolean
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           low_stock_threshold?: number
           name: string
           price: number
@@ -172,6 +218,8 @@ export type Database = {
           id?: string
           images?: string[]
           in_stock?: boolean
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           low_stock_threshold?: number
           name?: string
           price?: number
@@ -189,6 +237,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
       }
       stock_movements: {
         Row: {
@@ -267,6 +339,7 @@ export type Database = {
       }
       cancel_order: { Args: { _order_id: string }; Returns: undefined }
       confirm_order: { Args: { _order_id: string }; Returns: undefined }
+      current_admin_username: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
