@@ -95,7 +95,17 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
         <p className="mt-1 break-all text-xs text-muted-foreground">
           Identifiant : <code className="rounded bg-secondary px-1.5 py-0.5">{userId}</code>
         </p>
+        <form onSubmit={updateUsername} className="mt-4 space-y-3">
+          <div>
+            <Label>Nom d'utilisateur (affiché dans le journal d'activité)</Label>
+            <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="ex: aziz" />
+          </div>
+          <Button type="submit" variant="outline" disabled={savingName}>
+            {savingName ? "Enregistrement…" : "Enregistrer le nom"}
+          </Button>
+        </form>
       </section>
+
 
       <section className="rounded-xl border bg-card p-6">
         <h2 className="flex items-center gap-2 font-display text-lg font-bold">
