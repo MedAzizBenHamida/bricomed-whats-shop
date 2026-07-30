@@ -313,15 +313,51 @@ function ProductDialog({ product, categories, username, onDone }: { product: Pro
       stock_quantity: Math.max(0, Number(form.stock_quantity)),
       low_stock_threshold: Math.max(0, Number(form.low_stock_threshold)),
       featured: form.featured,
+      last_modified_by: username,
+      last_modified_at: new Date().toISOString(),
     };
     const res = product
       ? await supabase.from("products").update(payload).eq("id", product.id)
       : await supabase.from("products").insert(payload);
     setSaving(false);
     if (res.error) return toast.error(res.error.message);
+
+    const labels: Record<string, string> = {
+      name: "Nom",
+      price: "Prix",
+      category_id: "Catégorie",
+      stock_quantity: "Stock",
+      low_stock_threshold: "Seuil d'alerte",
+      short_description: "Description courte",
+      description: "Description",
+      images: "Images",
+      features: "Caractéristiques",
+      featured: "Vedette",
+    };
+    if (product) {
+      const changes = diffProduct(product as unknown as Record<string, unknown>, payload, labels);
+      if (changes.length) {
+        await logActivity({
+          action: "Modification produit",
+          entityType: "Produit",
+          entityName: payload.name,
+          entityId: product.id,
+          oldValue: changes.map((c) => `${c.label}: ${c.old || "—"}`).join(" | "),
+          newValue: changes.map((c) => `${c.label}: ${c.new || "—"}`).join(" | "),
+        });
+      }
+    } else {
+      await logActivity({
+        action: "Ajout produit",
+        entityType: "Produit",
+        entityName: payload.name,
+        newValue: `${formatPrice(payload.price)} — ${payload.stock_quantity} u.`,
+      });
+    }
     toast.success(product ? "Produit mis à jour" : "Produit créé");
     onDone();
   };
+
 
   return (
     <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
