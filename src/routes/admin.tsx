@@ -278,7 +278,7 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
 }
 
 type Category = { id: string; name: string; slug: string };
-function ProductDialog({ product, categories, onDone }: { product: Product | null; categories: Category[]; onDone: () => void }) {
+function ProductDialog({ product, categories, username, onDone }: { product: Product | null; categories: Category[]; username: string; onDone: () => void }) {
   const [form, setForm] = useState(() => ({
     name: product?.name ?? "",
     slug: product?.slug ?? "",
