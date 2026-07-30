@@ -91,8 +91,19 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
   };
 
   const toggleFeatured = async (p: Product) => {
-    const { error } = await supabase.from("products").update({ featured: !p.featured }).eq("id", p.id);
+    const { error } = await supabase
+      .from("products")
+      .update({ featured: !p.featured, last_modified_at: new Date().toISOString(), last_modified_by: username })
+      .eq("id", p.id);
     if (error) return toast.error(error.message);
+    await logActivity({
+      action: p.featured ? "Désactivation vedette" : "Activation vedette",
+      entityType: "Produit",
+      entityName: p.name,
+      entityId: p.id,
+      oldValue: p.featured ? "En vedette" : "Standard",
+      newValue: p.featured ? "Standard" : "En vedette",
+    });
     toast.success("Mis à jour");
     refresh();
   };
@@ -100,9 +111,17 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
   const remove = async (p: Product) => {
     const { error } = await supabase.from("products").delete().eq("id", p.id);
     if (error) return toast.error(error.message);
+    await logActivity({
+      action: "Suppression produit",
+      entityType: "Produit",
+      entityName: p.name,
+      entityId: p.id,
+      oldValue: `${formatPrice(p.price)} — ${p.stock_quantity} u.`,
+    });
     toast.success("Produit supprimé");
     refresh();
   };
+
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
