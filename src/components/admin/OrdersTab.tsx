@@ -43,6 +43,8 @@ export function OrdersTab() {
     qc.invalidateQueries({ queryKey: ["orders"] });
     qc.invalidateQueries({ queryKey: ["products"] });
     qc.invalidateQueries({ queryKey: ["stock_movements"] });
+    qc.invalidateQueries({ queryKey: ["activity_logs"] });
+
   };
 
   const confirm = async (o: Order) => {

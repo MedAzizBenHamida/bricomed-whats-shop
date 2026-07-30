@@ -9,18 +9,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package, ShoppingCart, Boxes, UserCog } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package, ShoppingCart, Boxes, UserCog, ScrollText } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { StatsDashboard } from "@/components/admin/StatsDashboard";
 import { OrdersTab } from "@/components/admin/OrdersTab";
 import { StockTab } from "@/components/admin/StockTab";
 import { ProfileTab } from "@/components/admin/ProfileTab";
+import { ActivityLogTab } from "@/components/admin/ActivityLogTab";
+import { ensureProfile, logActivity, diffProduct } from "@/lib/activity-log";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { categoriesQuery, productsQuery, ordersQuery, type Product } from "@/lib/queries";
 import { formatPrice } from "@/lib/constants";
 import type { User } from "@supabase/supabase-js";
+
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -82,17 +85,49 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
   const { data: orders = [] } = useQuery(ordersQuery);
   const [editing, setEditing] = useState<Product | null>(null);
   const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState(email.split("@")[0] ?? "admin");
+
+  useEffect(() => {
+    (async () => {
+      const name = await ensureProfile(userId, email);
+      setUsername(name);
+      const key = `bricomed-login-logged-${userId}`;
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+      logActivity({ action: "Connexion", entityType: "Administration", entityName: name, entityId: userId });
+    })();
+  }, [userId, email]);
 
   const pendingCount = orders.filter((o) => o.status === "pending").length;
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["products"] });
     qc.invalidateQueries({ queryKey: ["categories"] });
+    qc.invalidateQueries({ queryKey: ["activity_logs"] });
   };
 
+  const signOut = async () => {
+    await logActivity({ action: "Déconnexion", entityType: "Administration", entityName: username, entityId: userId });
+    sessionStorage.removeItem(`bricomed-login-logged-${userId}`);
+    await supabase.auth.signOut();
+    nav({ to: "/auth" });
+  };
+
+
   const toggleFeatured = async (p: Product) => {
-    const { error } = await supabase.from("products").update({ featured: !p.featured }).eq("id", p.id);
+    const { error } = await supabase
+      .from("products")
+      .update({ featured: !p.featured, last_modified_at: new Date().toISOString(), last_modified_by: username })
+      .eq("id", p.id);
     if (error) return toast.error(error.message);
+    await logActivity({
+      action: p.featured ? "Désactivation vedette" : "Activation vedette",
+      entityType: "Produit",
+      entityName: p.name,
+      entityId: p.id,
+      oldValue: p.featured ? "En vedette" : "Standard",
+      newValue: p.featured ? "Standard" : "En vedette",
+    });
     toast.success("Mis à jour");
     refresh();
   };
@@ -100,9 +135,17 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
   const remove = async (p: Product) => {
     const { error } = await supabase.from("products").delete().eq("id", p.id);
     if (error) return toast.error(error.message);
+    await logActivity({
+      action: "Suppression produit",
+      entityType: "Produit",
+      entityName: p.name,
+      entityId: p.id,
+      oldValue: `${formatPrice(p.price)} — ${p.stock_quantity} u.`,
+    });
     toast.success("Produit supprimé");
     refresh();
   };
+
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
@@ -120,12 +163,15 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
               key={editing?.id ?? "new"}
               product={editing}
               categories={categories}
+              username={username}
+
               onDone={() => { setOpen(false); setEditing(null); refresh(); }}
             />
           </Dialog>
-          <Button variant="outline" onClick={async () => { await supabase.auth.signOut(); nav({ to: "/auth" }); }}>
+          <Button variant="outline" onClick={signOut}>
             <LogOut className="h-4 w-4" /> Déconnexion
           </Button>
+
         </div>
       </div>
 
@@ -138,13 +184,16 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
           </TabsTrigger>
           <TabsTrigger value="stock" className="gap-2"><Boxes className="h-4 w-4" /> Stock</TabsTrigger>
           <TabsTrigger value="products" className="gap-2"><Package className="h-4 w-4" /> Produits</TabsTrigger>
+          <TabsTrigger value="logs" className="gap-2"><ScrollText className="h-4 w-4" /> Journal d'activité</TabsTrigger>
           <TabsTrigger value="profile" className="gap-2"><UserCog className="h-4 w-4" /> Profil</TabsTrigger>
         </TabsList>
 
         <TabsContent value="stats"><StatsDashboard /></TabsContent>
         <TabsContent value="orders"><OrdersTab /></TabsContent>
         <TabsContent value="stock"><StockTab /></TabsContent>
+        <TabsContent value="logs"><ActivityLogTab /></TabsContent>
         <TabsContent value="profile"><ProfileTab email={email} userId={userId} /></TabsContent>
+
 
 
         <TabsContent value="products">
@@ -157,7 +206,9 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
                   <th className="p-3">Prix</th>
                   <th className="p-3">Stock</th>
                   <th className="p-3">Vedette</th>
+                  <th className="p-3">Dernière modification</th>
                   <th className="p-3 text-right">Actions</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -187,6 +238,15 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
                           <Star className={`h-4 w-4 ${p.featured ? "fill-primary text-primary" : "text-muted-foreground"}`} />
                         </Button>
                       </td>
+                      <td className="p-3 text-xs text-muted-foreground">
+                        {p.last_modified_at ? (
+                          <>
+                            <div>{new Date(p.last_modified_at).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}</div>
+                            <div className="font-medium text-foreground">{p.last_modified_by ?? "—"}</div>
+                          </>
+                        ) : "—"}
+                      </td>
+
                       <td className="p-3 text-right">
                         <Button variant="ghost" size="icon" onClick={() => { setEditing(p); setOpen(true); }}>
                           <Pencil className="h-4 w-4" />
@@ -220,7 +280,7 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
 }
 
 type Category = { id: string; name: string; slug: string };
-function ProductDialog({ product, categories, onDone }: { product: Product | null; categories: Category[]; onDone: () => void }) {
+function ProductDialog({ product, categories, username, onDone }: { product: Product | null; categories: Category[]; username: string; onDone: () => void }) {
   const [form, setForm] = useState(() => ({
     name: product?.name ?? "",
     slug: product?.slug ?? "",
@@ -253,15 +313,51 @@ function ProductDialog({ product, categories, onDone }: { product: Product | nul
       stock_quantity: Math.max(0, Number(form.stock_quantity)),
       low_stock_threshold: Math.max(0, Number(form.low_stock_threshold)),
       featured: form.featured,
+      last_modified_by: username,
+      last_modified_at: new Date().toISOString(),
     };
     const res = product
       ? await supabase.from("products").update(payload).eq("id", product.id)
       : await supabase.from("products").insert(payload);
     setSaving(false);
     if (res.error) return toast.error(res.error.message);
+
+    const labels: Record<string, string> = {
+      name: "Nom",
+      price: "Prix",
+      category_id: "Catégorie",
+      stock_quantity: "Stock",
+      low_stock_threshold: "Seuil d'alerte",
+      short_description: "Description courte",
+      description: "Description",
+      images: "Images",
+      features: "Caractéristiques",
+      featured: "Vedette",
+    };
+    if (product) {
+      const changes = diffProduct(product as unknown as Record<string, unknown>, payload, labels);
+      if (changes.length) {
+        await logActivity({
+          action: "Modification produit",
+          entityType: "Produit",
+          entityName: payload.name,
+          entityId: product.id,
+          oldValue: changes.map((c) => `${c.label}: ${c.old || "—"}`).join(" | "),
+          newValue: changes.map((c) => `${c.label}: ${c.new || "—"}`).join(" | "),
+        });
+      }
+    } else {
+      await logActivity({
+        action: "Ajout produit",
+        entityType: "Produit",
+        entityName: payload.name,
+        newValue: `${formatPrice(payload.price)} — ${payload.stock_quantity} u.`,
+      });
+    }
     toast.success(product ? "Produit mis à jour" : "Produit créé");
     onDone();
   };
+
 
   return (
     <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">

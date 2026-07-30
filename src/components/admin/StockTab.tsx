@@ -35,6 +35,8 @@ export function StockTab() {
     setReason((s) => ({ ...s, [p.id]: "" }));
     qc.invalidateQueries({ queryKey: ["products"] });
     qc.invalidateQueries({ queryKey: ["stock_movements"] });
+    qc.invalidateQueries({ queryKey: ["activity_logs"] });
+
   };
 
   return (
