@@ -236,6 +236,15 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
                           <Star className={`h-4 w-4 ${p.featured ? "fill-primary text-primary" : "text-muted-foreground"}`} />
                         </Button>
                       </td>
+                      <td className="p-3 text-xs text-muted-foreground">
+                        {p.last_modified_at ? (
+                          <>
+                            <div>{new Date(p.last_modified_at).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}</div>
+                            <div className="font-medium text-foreground">{p.last_modified_by ?? "—"}</div>
+                          </>
+                        ) : "—"}
+                      </td>
+
                       <td className="p-3 text-right">
                         <Button variant="ghost" size="icon" onClick={() => { setEditing(p); setOpen(true); }}>
                           <Pencil className="h-4 w-4" />
