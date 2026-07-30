@@ -163,6 +163,8 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
               key={editing?.id ?? "new"}
               product={editing}
               categories={categories}
+              username={username}
+
               onDone={() => { setOpen(false); setEditing(null); refresh(); }}
             />
           </Dialog>
