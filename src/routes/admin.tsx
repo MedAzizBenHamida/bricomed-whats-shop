@@ -166,9 +166,10 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
               onDone={() => { setOpen(false); setEditing(null); refresh(); }}
             />
           </Dialog>
-          <Button variant="outline" onClick={async () => { await supabase.auth.signOut(); nav({ to: "/auth" }); }}>
+          <Button variant="outline" onClick={signOut}>
             <LogOut className="h-4 w-4" /> Déconnexion
           </Button>
+
         </div>
       </div>
 
