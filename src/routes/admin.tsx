@@ -204,7 +204,9 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
                   <th className="p-3">Prix</th>
                   <th className="p-3">Stock</th>
                   <th className="p-3">Vedette</th>
+                  <th className="p-3">Dernière modification</th>
                   <th className="p-3 text-right">Actions</th>
+
                 </tr>
               </thead>
               <tbody>
