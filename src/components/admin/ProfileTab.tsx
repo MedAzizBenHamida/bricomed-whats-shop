@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Mail, KeyRound, User as UserIcon } from "lucide-react";
+import { ensureProfile, logActivity, setCachedUsername } from "@/lib/activity-log";
 
 export function ProfileTab({ email, userId }: { email: string; userId: string }) {
   const [newEmail, setNewEmail] = useState(email);
@@ -12,6 +13,39 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
   const [pwd, setPwd] = useState("");
   const [pwd2, setPwd2] = useState("");
   const [savingPwd, setSavingPwd] = useState(false);
+  const [username, setUsername] = useState("");
+  const [initialUsername, setInitialUsername] = useState("");
+  const [savingName, setSavingName] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const name = await ensureProfile(userId, email);
+      setUsername(name);
+      setInitialUsername(name);
+    })();
+  }, [userId, email]);
+
+  const updateUsername = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const value = username.trim();
+    if (!value) return toast.error("Nom d'utilisateur requis");
+    if (value === initialUsername) return toast.info("Nom d'utilisateur identique");
+    setSavingName(true);
+    const { error } = await supabase.from("profiles").update({ username: value }).eq("id", userId);
+    setSavingName(false);
+    if (error) return toast.error(error.message);
+    setCachedUsername(value);
+    await logActivity({
+      action: "Modification profil",
+      entityType: "Administration",
+      entityName: value,
+      entityId: userId,
+      oldValue: `Nom d'utilisateur: ${initialUsername}`,
+      newValue: `Nom d'utilisateur: ${value}`,
+    });
+    setInitialUsername(value);
+    toast.success("Nom d'utilisateur mis à jour");
+  };
 
   const updateEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +54,14 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
     const { error } = await supabase.auth.updateUser({ email: newEmail.trim() });
     setSavingEmail(false);
     if (error) return toast.error(error.message);
+    await logActivity({
+      action: "Modification profil",
+      entityType: "Administration",
+      entityName: username || email,
+      entityId: userId,
+      oldValue: `Email: ${email}`,
+      newValue: `Email: ${newEmail.trim()} (en attente de confirmation)`,
+    });
     toast.success("Un email de confirmation a été envoyé à la nouvelle adresse.");
   };
 
@@ -33,8 +75,15 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
     if (error) return toast.error(error.message);
     setPwd("");
     setPwd2("");
+    await logActivity({
+      action: "Changement de mot de passe",
+      entityType: "Administration",
+      entityName: username || email,
+      entityId: userId,
+    });
     toast.success("Mot de passe mis à jour");
   };
+
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
