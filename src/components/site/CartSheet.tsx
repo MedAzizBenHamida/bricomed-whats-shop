@@ -16,6 +16,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   const { items, setQty, remove, clear, total } = useCart();
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [governorate, setGovernorate] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
@@ -25,13 +26,13 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   const buildMessage = (orderId?: string) => {
     const lines = items.map((i) => `• ${i.name} x${i.qty} : ${formatPrice(i.qty * i.price)}`).join("\n");
     const ref = orderId ? `\nRéf. commande : ${orderId.slice(0, 8).toUpperCase()}\n` : "";
-    const infos = `\nNom : ${name}\nTéléphone : ${fullPhone}${address ? `\nAdresse : ${address}` : ""}${notes ? `\nNotes : ${notes}` : ""}`;
+    const infos = `\nNom : ${name}\nTéléphone : ${fullPhone}${governorate ? `\nGouvernorat : ${governorate}` : ""}${address ? `\nAdresse : ${address}` : ""}${notes ? `\nNotes : ${notes}` : ""}`;
     return `Bonjour ${SHOP.name},\n\nJe souhaite commander :\n\n${lines}\n\nTotal : ${formatPrice(total)}${ref}${infos}\n\nMerci de confirmer la disponibilité.`;
   };
 
   const submit = async () => {
-    if (!name.trim() || !phoneNumber.trim() || !address.trim()) {
-      toast.error("Nom, téléphone et adresse requis");
+    if (!name.trim() || !phoneNumber.trim() || !governorate || !address.trim()) {
+      toast.error("Nom, téléphone, gouvernorat et adresse requis");
       return;
     }
 
@@ -54,6 +55,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
         customer_name: name.trim(),
         customer_phone: fullPhone,
         customer_address: address.trim() || null,
+        governorate,
         notes: notes.trim() || null,
         total,
       })
