@@ -1,0 +1,152 @@
+{
+  "home": {
+    "badge": "Quincaillerie · Bricolage · Jardinage",
+    "heroTitle": "Tout pour vos travaux,",
+    "heroHighlight": "au meilleur prix.",
+    "seeProducts": "Voir les produits",
+    "contactWhatsapp": "Contacter via WhatsApp",
+    "categoriesTitle": "Nos catégories",
+    "categoriesText": "Trouvez rapidement ce dont vous avez besoin.",
+    "seeAll": "Tout voir",
+    "whyTitle": "Pourquoi nous choisir ?",
+    "whyText": "L'expérience quincaillerie, en mieux.",
+    "reasons": {
+      "quality": {
+        "title": "Produits de qualité",
+        "text": "Sélection rigoureuse de marques reconnues."
+      },
+      "price": {
+        "title": "Prix transparents",
+        "text": "Des tarifs justes, sans surprises."
+      },
+      "pickup": {
+        "title": "Retrait rapide",
+        "text": "Vos produits prêts en magasin."
+      },
+      "advice": {
+        "title": "Conseil expert",
+        "text": "Une équipe de bricoleurs à votre écoute."
+      }
+    },
+    "featuredTitle": "Produits populaires",
+    "featuredText": "Une sélection de nos best-sellers.",
+    "ctaTitle": "Une question ? Un devis ?",
+    "ctaText": "Envoyez-nous votre besoin sur WhatsApp, nous vous répondons rapidement.",
+    "ctaButton": "Écrire sur WhatsApp",
+    "whatsappHello": "Bonjour {{shop}}, j'aimerais des renseignements."
+  },
+  "catalogue": {
+    "title": "Catalogue",
+    "count": "{{count}} produits disponibles",
+    "searchPlaceholder": "Rechercher un produit…",
+    "allCategories": "Toutes les catégories",
+    "sortBy": "Trier par",
+    "sortDefault": "Par défaut",
+    "sortNameAsc": "Nom (A → Z)",
+    "sortPriceAsc": "Prix croissant",
+    "sortPriceDesc": "Prix décroissant",
+    "emptyText": "Aucun produit ne correspond à votre recherche.",
+    "reset": "Réinitialiser"
+  },
+  "product": {
+    "noImage": "Sans image",
+    "featured": "Vedette",
+    "view": "Voir",
+    "backToCatalogue": "Retour au catalogue",
+    "inStock": "En stock ({{count}} disponible(s))",
+    "unavailable": "Momentanément indisponible",
+    "features": "Caractéristiques",
+    "addedToCart": "{{name}} ajouté au panier"
+  },
+  "cart": {
+    "title": "Mon panier",
+    "empty": "Votre panier est vide",
+    "yourName": "Votre nom",
+    "fullName": "Nom complet",
+    "phone": "Téléphone *",
+    "phonePlaceholder": "00 000 000",
+    "governorate": "Gouvernorat *",
+    "chooseGovernorate": "Choisir un gouvernorat",
+    "address": "Adresse détaillée *",
+    "addressPlaceholder": "Rue, quartier, numéro",
+    "notes": "Notes (optionnel)",
+    "sending": "Envoi…",
+    "orderWhatsapp": "Commander via WhatsApp",
+    "clear": "Vider le panier",
+    "errRequired": "Nom, téléphone, gouvernorat et adresse requis",
+    "errPopup": "Le navigateur a bloqué l'ouverture de WhatsApp. Autorisez les popups pour ce site.",
+    "errSaved": "WhatsApp est ouvert, mais la commande n'a pas été enregistrée",
+    "success": "Commande envoyée sur WhatsApp",
+    "msg": {
+      "hello": "Bonjour {{shop}},",
+      "intro": "Je souhaite commander :",
+      "total": "Total",
+      "ref": "Réf. commande",
+      "name": "Nom",
+      "phone": "Téléphone",
+      "governorate": "Gouvernorat",
+      "address": "Adresse",
+      "notes": "Notes",
+      "outro": "Merci de confirmer la disponibilité."
+    }
+  },
+  "about": {
+    "title": "À propos de {{shop}}",
+    "intro": "{{shop}} est une quincaillerie familiale située au cœur de la région de Médenine. Nous accompagnons les particuliers, les artisans et les professionnels avec un large choix de produits et un conseil qui fait vraiment la différence.",
+    "historyTitle": "Notre histoire",
+    "historyText": "Fondée en 2003, {{shop}} a grandi avec le quartier. D'un petit magasin de quartier, nous sommes devenus une référence locale du bricolage, tout en gardant l'accueil et l'écoute qui font notre force.",
+    "storeTitle": "Notre magasin",
+    "storeText": "Sur plus de 400m², retrouvez plus de 5 000 références réparties en 8 rayons : outillage, électricité, plomberie, peinture, jardinage, visserie, serrurerie et quincaillerie générale.",
+    "valuesTitle": "Nos valeurs",
+    "values": {
+      "passion": {
+        "title": "Passion",
+        "text": "Le bricolage est notre métier depuis plus de 20 ans."
+      },
+      "quality": {
+        "title": "Qualité",
+        "text": "Nous ne vendons que des produits que nous utiliserions nous-mêmes."
+      },
+      "close": {
+        "title": "Proximité",
+        "text": "Un conseil humain, à votre écoute, en boutique comme sur WhatsApp."
+      }
+    },
+    "photoAlt": "Magasin {{shop}}",
+    "hoursTitle": "Horaires & adresse"
+  },
+  "contact": {
+    "title": "Nous contacter",
+    "intro": "Une question, un devis, un besoin de conseil ? Nous vous répondons rapidement.",
+    "whatsappBtn": "Contacter via WhatsApp",
+    "callBtn": "Appeler",
+    "mapsBtn": "Ouvrir dans Google Maps",
+    "writeNow": "Écrire maintenant",
+    "hours": "Horaires d'ouverture",
+    "mapTitle": "Carte {{shop}}",
+    "formTitle": "Envoyez-nous un message",
+    "formText": "Nous répondons via WhatsApp pour un échange rapide.",
+    "submit": "Envoyer via WhatsApp",
+    "toastReady": "Message prêt à être envoyé sur WhatsApp",
+    "hoursList": {
+      "weekdays": {
+        "day": "Lundi – Vendredi",
+        "time": "08:00 – 18:00"
+      },
+      "saturday": {
+        "day": "Samedi",
+        "time": "08:00 – 13:00"
+      },
+      "sunday": {
+        "day": "Dimanche",
+        "time": "Fermé"
+      }
+    }
+  },
+  "footer": {
+    "navigation": "Navigation",
+    "contact": "Contact",
+    "hours": "Horaires",
+    "rights": "Tous droits réservés."
+  }
+}

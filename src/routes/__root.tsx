@@ -16,6 +16,8 @@ import { CartProvider } from "@/lib/cart-context";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import "@/i18n";
+import { LanguageProvider } from "@/i18n/LanguageProvider";
 
 function NotFoundComponent() {
   return (
@@ -137,16 +139,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
-        <Toaster position="top-right" richColors />
-      </CartProvider>
+      <LanguageProvider>
+        <CartProvider>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
+          <Toaster position="top-right" richColors />
+        </CartProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }
