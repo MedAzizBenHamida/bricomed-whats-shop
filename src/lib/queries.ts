@@ -45,6 +45,7 @@ export type Order = {
   customer_name: string;
   customer_phone: string;
   customer_address: string | null;
+  governorate: string | null;
   notes: string | null;
   status: OrderStatus;
   total: number;
