@@ -78,6 +78,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     clear();
     setName("");
     setPhoneNumber("");
+    setGovernorate("");
     setAddress("");
     setNotes("");
     setSending(false);
@@ -145,8 +146,21 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="address">Ville et rue *</Label>
-                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Ville, rue" />
+                  <Label>Gouvernorat *</Label>
+                  <Select value={governorate} onValueChange={setGovernorate}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir un gouvernorat" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GOVERNORATES.map((g) => (
+                        <SelectItem key={g} value={g}>{g}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="address">Adresse détaillée *</Label>
+                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rue, quartier, numéro" />
                 </div>
                 <div>
                   <Label>Notes (optionnel)</Label>
