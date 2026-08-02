@@ -11,10 +11,22 @@
     "whyTitle": "Pourquoi nous choisir ?",
     "whyText": "L'expérience quincaillerie, en mieux.",
     "reasons": {
-      "quality": { "title": "Produits de qualité", "text": "Sélection rigoureuse de marques reconnues." },
-      "price": { "title": "Prix transparents", "text": "Des tarifs justes, sans surprises." },
-      "pickup": { "title": "Retrait rapide", "text": "Vos produits prêts en magasin." },
-      "advice": { "title": "Conseil expert", "text": "Une équipe de bricoleurs à votre écoute." }
+      "quality": {
+        "title": "Produits de qualité",
+        "text": "Sélection rigoureuse de marques reconnues."
+      },
+      "price": {
+        "title": "Prix transparents",
+        "text": "Des tarifs justes, sans surprises."
+      },
+      "pickup": {
+        "title": "Retrait rapide",
+        "text": "Vos produits prêts en magasin."
+      },
+      "advice": {
+        "title": "Conseil expert",
+        "text": "Une équipe de bricoleurs à votre écoute."
+      }
     },
     "featuredTitle": "Produits populaires",
     "featuredText": "Une sélection de nos best-sellers.",
@@ -87,9 +99,18 @@
     "storeText": "Sur plus de 400m², retrouvez plus de 5 000 références réparties en 8 rayons : outillage, électricité, plomberie, peinture, jardinage, visserie, serrurerie et quincaillerie générale.",
     "valuesTitle": "Nos valeurs",
     "values": {
-      "passion": { "title": "Passion", "text": "Le bricolage est notre métier depuis plus de 20 ans." },
-      "quality": { "title": "Qualité", "text": "Nous ne vendons que des produits que nous utiliserions nous-mêmes." },
-      "close": { "title": "Proximité", "text": "Un conseil humain, à votre écoute, en boutique comme sur WhatsApp." }
+      "passion": {
+        "title": "Passion",
+        "text": "Le bricolage est notre métier depuis plus de 20 ans."
+      },
+      "quality": {
+        "title": "Qualité",
+        "text": "Nous ne vendons que des produits que nous utiliserions nous-mêmes."
+      },
+      "close": {
+        "title": "Proximité",
+        "text": "Un conseil humain, à votre écoute, en boutique comme sur WhatsApp."
+      }
     },
     "photoAlt": "Magasin {{shop}}",
     "hoursTitle": "Horaires & adresse"
@@ -106,7 +127,21 @@
     "formTitle": "Envoyez-nous un message",
     "formText": "Nous répondons via WhatsApp pour un échange rapide.",
     "submit": "Envoyer via WhatsApp",
-    "toastReady": "Message prêt à être envoyé sur WhatsApp"
+    "toastReady": "Message prêt à être envoyé sur WhatsApp",
+    "hoursList": {
+      "weekdays": {
+        "day": "Lundi – Vendredi",
+        "time": "08:00 – 18:00"
+      },
+      "saturday": {
+        "day": "Samedi",
+        "time": "08:00 – 13:00"
+      },
+      "sunday": {
+        "day": "Dimanche",
+        "time": "Fermé"
+      }
+    }
   },
   "footer": {
     "navigation": "Navigation",
