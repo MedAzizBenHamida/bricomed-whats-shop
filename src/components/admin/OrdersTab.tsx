@@ -100,6 +100,7 @@ export function OrdersTab() {
                 </Button>
                 {isOpen && (
                   <div className="space-y-2 rounded-lg border bg-secondary/40 p-3 text-sm">
+                    {o.governorate && <p><strong>Gouvernorat :</strong> {o.governorate}</p>}
                     {o.customer_address && <p><strong>Adresse :</strong> {o.customer_address}</p>}
                     {o.notes && <p><strong>Notes :</strong> {o.notes}</p>}
                     <ul className="mt-2 divide-y">

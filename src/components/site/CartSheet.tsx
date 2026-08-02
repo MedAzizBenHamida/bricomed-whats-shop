@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { GOVERNORATES } from "@/lib/constants";
 import { Minus, Plus, Trash2, MessageCircle, ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { SHOP, formatPrice, waLink } from "@/lib/constants";
@@ -14,6 +16,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   const { items, setQty, remove, clear, total } = useCart();
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [governorate, setGovernorate] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
@@ -23,13 +26,13 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   const buildMessage = (orderId?: string) => {
     const lines = items.map((i) => `• ${i.name} x${i.qty} : ${formatPrice(i.qty * i.price)}`).join("\n");
     const ref = orderId ? `\nRéf. commande : ${orderId.slice(0, 8).toUpperCase()}\n` : "";
-    const infos = `\nNom : ${name}\nTéléphone : ${fullPhone}${address ? `\nAdresse : ${address}` : ""}${notes ? `\nNotes : ${notes}` : ""}`;
+    const infos = `\nNom : ${name}\nTéléphone : ${fullPhone}${governorate ? `\nGouvernorat : ${governorate}` : ""}${address ? `\nAdresse : ${address}` : ""}${notes ? `\nNotes : ${notes}` : ""}`;
     return `Bonjour ${SHOP.name},\n\nJe souhaite commander :\n\n${lines}\n\nTotal : ${formatPrice(total)}${ref}${infos}\n\nMerci de confirmer la disponibilité.`;
   };
 
   const submit = async () => {
-    if (!name.trim() || !phoneNumber.trim() || !address.trim()) {
-      toast.error("Nom, téléphone et adresse requis");
+    if (!name.trim() || !phoneNumber.trim() || !governorate || !address.trim()) {
+      toast.error("Nom, téléphone, gouvernorat et adresse requis");
       return;
     }
 
@@ -52,6 +55,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
         customer_name: name.trim(),
         customer_phone: fullPhone,
         customer_address: address.trim() || null,
+        governorate,
         notes: notes.trim() || null,
         total,
       })
@@ -74,6 +78,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     clear();
     setName("");
     setPhoneNumber("");
+    setGovernorate("");
     setAddress("");
     setNotes("");
     setSending(false);
@@ -141,8 +146,21 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="address">Ville et rue *</Label>
-                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Ville, rue" />
+                  <Label>Gouvernorat *</Label>
+                  <Select value={governorate} onValueChange={setGovernorate}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir un gouvernorat" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GOVERNORATES.map((g) => (
+                        <SelectItem key={g} value={g}>{g}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="address">Adresse détaillée *</Label>
+                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rue, quartier, numéro" />
                 </div>
                 <div>
                   <Label>Notes (optionnel)</Label>
