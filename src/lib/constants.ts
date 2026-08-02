@@ -4,12 +4,21 @@ export const SHOP = {
   slogan: "Tous vos outils, matériaux et fournitures — au meilleur prix.",
   whatsapp: "21692841145",
   phone: "+216 92 841 145",
-  email: "contact@bricomed.tn",
-  address: "Avenue Habib Bourguiba, Tunis, Tunisie",
-  hours: "Lun–Sam : 8h – 19h · Dim : 9h – 13h",
+  // Modifiable facilement par l'administrateur
+  email: "contact@quicaillerie.tn",
+  address: "Quicaillerie, Route de Médenine, Plus Code : 8FXV+FPH, Médenine, Tunisie",
+  addressLines: ["Quicaillerie", "Route de Médenine", "Plus Code : 8FXV+FPH", "Médenine, Tunisie"],
+  hours: "Lun–Ven : 08:00 – 18:00 · Sam : 08:00 – 13:00 · Dim : Fermé",
+  openingHours: [
+    { day: "Lundi – Vendredi", time: "08:00 – 18:00" },
+    { day: "Samedi", time: "08:00 – 13:00" },
+    { day: "Dimanche", time: "Fermé" },
+  ],
   currency: "DT",
+  mapQuery: "8FXV+FPH Médenine, Tunisie",
   mapEmbed:
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3193.0!2d10.181667!3d36.806389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sTunis!5e0!3m2!1sfr!2stn!4v1700000000000",
+    "https://www.google.com/maps?q=8FXV%2BFPH%20M%C3%A9denine%2C%20Tunisie&hl=fr&z=16&output=embed",
+  mapLink: "https://www.google.com/maps/search/?api=1&query=8FXV%2BFPH%20M%C3%A9denine%2C%20Tunisie",
 };
 
 export const GOVERNORATES = [
