@@ -1,19 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import { Menu, ShoppingCart, Wrench } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart-context";
 import { CartSheet } from "./CartSheet";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { SHOP } from "@/lib/constants";
 
 const nav = [
-  { to: "/", label: "Accueil" },
-  { to: "/catalogue", label: "Catalogue" },
-  { to: "/a-propos", label: "À propos" },
-  { to: "/contact", label: "Contact" },
-];
+  { to: "/", key: "nav.home" },
+  { to: "/catalogue", key: "nav.catalogue" },
+  { to: "/a-propos", key: "nav.about" },
+  { to: "/contact", key: "nav.contact" },
+] as const;
 
 export function Header() {
+  const { t } = useTranslation("common");
   const { count } = useCart();
   const [openCart, setOpenCart] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
@@ -37,22 +40,23 @@ export function Header() {
               activeProps={{ className: "text-foreground" }}
               activeOptions={{ exact: n.to === "/" }}
             >
-              {n.label}
+              {t(n.key)}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher className="hidden sm:inline-flex" />
           <Button
             variant="ghost"
             size="icon"
             className="relative"
             onClick={() => setOpenCart(true)}
-            aria-label="Panier"
+            aria-label={t("labels.cart")}
           >
             <ShoppingCart className="h-5 w-5" />
             {count > 0 && (
-              <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-semibold text-primary-foreground">
+              <span className="absolute -end-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-semibold text-primary-foreground">
                 {count}
               </span>
             )}
@@ -61,7 +65,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             className="md:hidden"
-            aria-label="Menu"
+            aria-label={t("labels.menu")}
             onClick={() => setOpenMenu((v) => !v)}
           >
             <Menu className="h-5 w-5" />
@@ -80,9 +84,10 @@ export function Header() {
                 className="py-3 text-sm font-medium text-muted-foreground"
                 activeProps={{ className: "text-foreground" }}
               >
-                {n.label}
+                {t(n.key)}
               </Link>
             ))}
+            <LanguageSwitcher className="my-3 self-start sm:hidden" />
           </div>
         </div>
       )}

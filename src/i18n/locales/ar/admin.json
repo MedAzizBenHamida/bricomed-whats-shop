@@ -1,1 +1,263 @@
-{}
+{
+  "loading": "جارٍ التحميل…",
+  "access": {
+    "restrictedTitle": "وصول مقيّد",
+    "restrictedText": "حسابك ({{email}}) لا يملك صلاحية المسؤول. تواصل مع فريق BricoMed لإضافتك.",
+    "idToShare": "المعرّف الذي يجب إرساله:"
+  },
+  "header": {
+    "title": "الإدارة",
+    "connectedAs": "متصل باسم: {{email}}",
+    "newProduct": "منتج جديد"
+  },
+  "tabs": {
+    "stats": "لوحة القيادة",
+    "orders": "الطلبات",
+    "stock": "المخزون",
+    "products": "المنتجات",
+    "logs": "سجل النشاط",
+    "profile": "الملف الشخصي"
+  },
+  "products": {
+    "table": {
+      "product": "المنتج",
+      "category": "الفئة",
+      "price": "السعر",
+      "stock": "المخزون",
+      "featured": "مميز",
+      "lastModified": "آخر تعديل",
+      "actions": "إجراءات"
+    },
+    "badge": { "outOfStock": "نفدت الكمية", "low": "منخفض" },
+    "deleteDialog": {
+      "title": "هل تريد حذف هذا المنتج؟",
+      "description": "هذا الإجراء لا يمكن التراجع عنه."
+    },
+    "toasts": {
+      "featuredUpdated": "تم التحديث",
+      "deleted": "تم حذف المنتج",
+      "created": "تم إنشاء المنتج",
+      "updated": "تم تحديث المنتج"
+    },
+    "dialog": {
+      "editTitle": "تعديل المنتج",
+      "newTitle": "منتج جديد",
+      "name": "الاسم",
+      "slug": "الرابط المختصر (Slug)",
+      "slugPlaceholder": "تلقائي",
+      "price": "السعر (د.ت)",
+      "category": "الفئة",
+      "categoryPlaceholder": "اختر…",
+      "stockQuantity": "الكمية في المخزون",
+      "lowStockThreshold": "حد التنبيه لانخفاض المخزون",
+      "shortDescription": "وصف مختصر",
+      "description": "الوصف الكامل",
+      "images": "الصور (رابط واحد لكل سطر)",
+      "features": "المواصفات (واحدة لكل سطر)",
+      "featured": "وضع كمنتج مميز",
+      "saving": "جارٍ الحفظ…",
+      "save": "حفظ"
+    },
+    "fields": {
+      "name": "الاسم",
+      "price": "السعر",
+      "category": "الفئة",
+      "stock": "المخزون",
+      "lowStockThreshold": "حد التنبيه",
+      "shortDescription": "وصف مختصر",
+      "description": "الوصف",
+      "images": "الصور",
+      "features": "المواصفات",
+      "featured": "مميز"
+    }
+  },
+  "stats": {
+    "kpis": {
+      "products": "المنتجات",
+      "categories": "الفئات",
+      "orders": "الطلبات",
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكدة",
+      "revenue": "إجمالي الإيرادات",
+      "revenueMonth": "إيرادات الشهر",
+      "lowStock": "مخزون منخفض"
+    },
+    "attention": {
+      "title": "نقاط تستدعي الانتباه",
+      "toConfirm": "{{count}} طلب(ات) بحاجة إلى تأكيد",
+      "outOfStock": "{{count}} نفدت كميته",
+      "lowStock": "{{count}} مخزون منخفض"
+    },
+    "charts": {
+      "salesEvolutionTitle": "تطور المبيعات (آخر 30 يوماً)",
+      "salesEvolutionDesc": "إيرادات الطلبات المؤكدة يومياً",
+      "salesByCategoryTitle": "المبيعات حسب الفئة",
+      "salesByCategoryDesc": "توزيع الوحدات المباعة",
+      "topProductsTitle": "أفضل المنتجات مبيعاً",
+      "topProductsDesc": "أفضل المبيعات (وحدات)",
+      "outOfStockTitle": "نفاد ومخزون منخفض",
+      "outOfStockDesc": "بحاجة إلى إعادة التزويد أولاً",
+      "worstSellersTitle": "المنتجات الأقل مبيعاً",
+      "worstSellersDesc": "قد تحتاج إلى إبراز أو تصريف",
+      "recentOrdersTitle": "آخر الطلبات",
+      "recentOrdersDesc": "نظرة سريعة على النشاط"
+    },
+    "table": {
+      "product": "المنتج",
+      "stock": "المخزون",
+      "threshold": "الحد",
+      "unitsSold": "الوحدات المباعة",
+      "customer": "الزبون",
+      "total": "الإجمالي",
+      "status": "الحالة"
+    },
+    "empty": {
+      "noAlerts": "لا توجد تنبيهات 🎉",
+      "noOrders": "لا توجد طلبات"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكدة",
+      "cancelled": "ملغاة"
+    }
+  },
+  "orders": {
+    "tabs": {
+      "all": "الكل ({{count}})",
+      "pending": "قيد الانتظار ({{count}})",
+      "confirmed": "مؤكدة ({{count}})",
+      "cancelled": "ملغاة ({{count}})"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكدة",
+      "cancelled": "ملغاة"
+    },
+    "details": "التفاصيل ({{count}} منتج{{plural}})",
+    "governorate": "الولاية:",
+    "address": "العنوان:",
+    "notes": "ملاحظات:",
+    "confirm": "تأكيد (ينقص المخزون)",
+    "cancel": "إلغاء",
+    "informClient": "📱 إعلام الزبون",
+    "informUnavailability": "❌ الإعلام بعدم التوفر",
+    "empty": "لا توجد طلبات.",
+    "toasts": {
+      "invalidPhone": "رقم هاتف الزبون فارغ أو غير صالح — تعذر فتح واتساب.",
+      "confirmed": "تم تأكيد الطلب — تم تحديث المخزون",
+      "cancelled": "تم إلغاء الطلب"
+    },
+    "whatsapp": {
+      "confirmed": "مرحباً {{name}} 👋،\n\nيسعدنا إعلامكم بأن طلبكم #{{ref}} قد تم تأكيده بنجاح.\n\n📦 هو الآن قيد التحضير.\n💰 المبلغ الإجمالي: {{total}} د.ت.\n\nسنتواصل معكم فور جاهزيته.\n\nشكراً لثقتكم.\nفريق Quicaillerie.",
+      "unavailable": "مرحباً {{name}}،\n\nنأسف لإبلاغكم بأن طلبكم #{{ref}} لا يمكن تأكيده للأسف بسبب عدم توفر منتج واحد أو أكثر حالياً.\n\nيرجى التواصل معنا لنقترح عليكم حلاً أو منتجاً بديلاً.\n\nشكراً لتفهمكم.\nفريق Quicaillerie."
+    }
+  },
+  "stock": {
+    "management": {
+      "title": "إدارة المخزون",
+      "description": "تعديل الكميات المتوفرة بسرعة",
+      "searchPlaceholder": "البحث عن منتج…"
+    },
+    "table": {
+      "product": "المنتج",
+      "stock": "المخزون",
+      "threshold": "الحد",
+      "adjustment": "التعديل",
+      "reason": "السبب",
+      "actions": "إجراءات"
+    },
+    "badge": { "outOfStock": "نفدت الكمية", "low": "منخفض" },
+    "reasonPlaceholder": "مثال: إعادة تزويد",
+    "add": "إضافة",
+    "remove": "سحب",
+    "toasts": { "updated": "تم تحديث المخزون ({{sign}}{{change}})" },
+    "defaultReasons": {
+      "restock": "إعادة تزويد",
+      "correction": "تصحيح الجرد"
+    },
+    "history": {
+      "title": "سجل الحركات",
+      "description": "آخر 200 حركة",
+      "date": "التاريخ",
+      "product": "المنتج",
+      "variation": "التغيير",
+      "reason": "السبب",
+      "empty": "لا توجد حركات مسجلة."
+    }
+  },
+  "profile": {
+    "account": {
+      "title": "الحساب",
+      "role": "الدور: مسؤول",
+      "id": "المعرّف:",
+      "usernameLabel": "اسم المستخدم (يظهر في سجل النشاط)",
+      "usernamePlaceholder": "مثال: aziz",
+      "save": "حفظ الاسم",
+      "saving": "جارٍ الحفظ…"
+    },
+    "email": {
+      "title": "البريد الإلكتروني",
+      "label": "البريد الإلكتروني",
+      "save": "تعديل البريد الإلكتروني",
+      "saving": "جارٍ الإرسال…",
+      "hint": "سيُرسل رابط تأكيد إلى العنوان الجديد."
+    },
+    "password": {
+      "title": "كلمة المرور",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirm": "تأكيد",
+      "save": "تغيير كلمة المرور",
+      "saving": "جارٍ الحفظ…"
+    },
+    "toasts": {
+      "usernameRequired": "اسم المستخدم مطلوب",
+      "usernameUnchanged": "اسم المستخدم مطابق للحالي",
+      "usernameUpdated": "تم تحديث اسم المستخدم",
+      "emailUnchanged": "العنوان مطابق للحالي",
+      "emailSent": "تم إرسال بريد تأكيد إلى العنوان الجديد.",
+      "passwordTooShort": "6 أحرف على الأقل",
+      "passwordMismatch": "كلمتا المرور غير متطابقتين",
+      "passwordUpdated": "تم تحديث كلمة المرور"
+    }
+  },
+  "logs": {
+    "title": "سجل النشاط",
+    "description": "سجل للقراءة فقط لإجراءات المسؤولين — {{count}} إدخال(ات)",
+    "refresh": "تحديث",
+    "exportPdf": "تصدير كـ PDF",
+    "exportExcel": "تصدير كـ Excel",
+    "search": "بحث",
+    "searchPlaceholder": "منتج، إجراء، مسؤول…",
+    "admin": "المسؤول",
+    "allAdmins": "الكل",
+    "actionType": "نوع الإجراء",
+    "allActions": "الكل",
+    "from": "من",
+    "to": "إلى",
+    "resetFilters": "إعادة تعيين المرشحات",
+    "table": {
+      "date": "التاريخ",
+      "admin": "المسؤول",
+      "action": "الإجراء",
+      "element": "العنصر",
+      "details": "التفاصيل",
+      "ip": "عنوان IP"
+    },
+    "empty": "لا توجد إدخالات.",
+    "pdf": {
+      "title": "BricoMed — سجل النشاط",
+      "exportDate": "تم التصدير في {{date}} — {{count}} إدخال(ات)"
+    },
+    "actionLabels": {
+      "Connexion": "تسجيل الدخول",
+      "Déconnexion": "تسجيل الخروج",
+      "Désactivation vedette": "إلغاء التمييز",
+      "Activation vedette": "تفعيل التمييز",
+      "Suppression produit": "حذف منتج",
+      "Modification produit": "تعديل منتج",
+      "Ajout produit": "إضافة منتج",
+      "Modification profil": "تعديل الملف الشخصي",
+      "Changement de mot de passe": "تغيير كلمة المرور"
+    }
+  }
+}

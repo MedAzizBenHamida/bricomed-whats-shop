@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { categoriesQuery, productsQuery, ordersQuery } from "@/lib/queries";
 import { formatPrice } from "@/lib/constants";
@@ -16,6 +17,7 @@ import {
 const COLORS = ["#F57C00", "#212121", "#FB923C", "#FDBA74", "#FED7AA", "#78716C", "#A8A29E", "#D6D3D1"];
 
 export function StatsDashboard() {
+  const { t } = useTranslation(["admin", "common"]);
   const { data: products = [] } = useQuery(productsQuery);
   const { data: categories = [] } = useQuery(categoriesQuery);
   const { data: orders = [] } = useQuery(ordersQuery);
@@ -86,14 +88,14 @@ export function StatsDashboard() {
   }, [products, categories, orders]);
 
   const kpis = [
-    { label: "Produits", value: products.length, icon: Package, tone: "bg-primary/10 text-primary" },
-    { label: "Catégories", value: categories.length, icon: Tags, tone: "bg-blue-500/10 text-blue-600" },
-    { label: "Commandes", value: stats.totalOrders, icon: ShoppingCart, tone: "bg-secondary text-foreground" },
-    { label: "En attente", value: stats.pending, icon: Clock, tone: "bg-amber-500/10 text-amber-600" },
-    { label: "Confirmées", value: stats.confirmed, icon: CheckCircle2, tone: "bg-emerald-500/10 text-emerald-600" },
-    { label: "CA total", value: formatPrice(stats.revenue), icon: DollarSign, tone: "bg-primary/10 text-primary" },
-    { label: "CA du mois", value: formatPrice(stats.revenueMonth), icon: CalendarDays, tone: "bg-primary/10 text-primary" },
-    { label: "Stock faible", value: stats.lowStock.length, icon: AlertTriangle, tone: "bg-amber-500/10 text-amber-600" },
+    { label: t("admin:stats.kpis.products"), value: products.length, icon: Package, tone: "bg-primary/10 text-primary" },
+    { label: t("admin:stats.kpis.categories"), value: categories.length, icon: Tags, tone: "bg-blue-500/10 text-blue-600" },
+    { label: t("admin:stats.kpis.orders"), value: stats.totalOrders, icon: ShoppingCart, tone: "bg-secondary text-foreground" },
+    { label: t("admin:stats.kpis.pending"), value: stats.pending, icon: Clock, tone: "bg-amber-500/10 text-amber-600" },
+    { label: t("admin:stats.kpis.confirmed"), value: stats.confirmed, icon: CheckCircle2, tone: "bg-emerald-500/10 text-emerald-600" },
+    { label: t("admin:stats.kpis.revenue"), value: formatPrice(stats.revenue), icon: DollarSign, tone: "bg-primary/10 text-primary" },
+    { label: t("admin:stats.kpis.revenueMonth"), value: formatPrice(stats.revenueMonth), icon: CalendarDays, tone: "bg-primary/10 text-primary" },
+    { label: t("admin:stats.kpis.lowStock"), value: stats.lowStock.length, icon: AlertTriangle, tone: "bg-amber-500/10 text-amber-600" },
   ];
 
   return (
@@ -118,13 +120,13 @@ export function StatsDashboard() {
         <Card className="border-amber-500/40 bg-amber-500/5">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <AlertTriangle className="h-4 w-4 text-amber-600" /> Points d'attention
+              <AlertTriangle className="h-4 w-4 text-amber-600" /> {t("admin:stats.attention.title")}
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-2">
-            {stats.pending > 0 && <Badge variant="secondary">{stats.pending} commande(s) à confirmer</Badge>}
-            {stats.outOfStock.length > 0 && <Badge variant="destructive">{stats.outOfStock.length} en rupture</Badge>}
-            {stats.lowStock.length > 0 && <Badge variant="secondary">{stats.lowStock.length} stock faible</Badge>}
+            {stats.pending > 0 && <Badge variant="secondary">{t("admin:stats.attention.toConfirm", { count: stats.pending })}</Badge>}
+            {stats.outOfStock.length > 0 && <Badge variant="destructive">{t("admin:stats.attention.outOfStock", { count: stats.outOfStock.length })}</Badge>}
+            {stats.lowStock.length > 0 && <Badge variant="secondary">{t("admin:stats.attention.lowStock", { count: stats.lowStock.length })}</Badge>}
           </CardContent>
         </Card>
       )}
@@ -132,8 +134,8 @@ export function StatsDashboard() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Évolution des ventes (30 derniers jours)</CardTitle>
-            <CardDescription>CA des commandes confirmées par jour</CardDescription>
+            <CardTitle className="text-base">{t("admin:stats.charts.salesEvolutionTitle")}</CardTitle>
+            <CardDescription>{t("admin:stats.charts.salesEvolutionDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -150,8 +152,8 @@ export function StatsDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Ventes par catégorie</CardTitle>
-            <CardDescription>Répartition des unités vendues</CardDescription>
+            <CardTitle className="text-base">{t("admin:stats.charts.salesByCategoryTitle")}</CardTitle>
+            <CardDescription>{t("admin:stats.charts.salesByCategoryDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -175,8 +177,8 @@ export function StatsDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Top produits vendus</CardTitle>
-            <CardDescription>Meilleures ventes (unités)</CardDescription>
+            <CardTitle className="text-base">{t("admin:stats.charts.topProductsTitle")}</CardTitle>
+            <CardDescription>{t("admin:stats.charts.topProductsDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -194,15 +196,15 @@ export function StatsDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <XCircle className="h-4 w-4 text-destructive" /> Rupture & stock faible
+              <XCircle className="h-4 w-4 text-destructive" /> {t("admin:stats.charts.outOfStockTitle")}
             </CardTitle>
-            <CardDescription>À réapprovisionner en priorité</CardDescription>
+            <CardDescription>{t("admin:stats.charts.outOfStockDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <div className="max-h-72 overflow-y-auto">
               <table className="w-full text-sm">
                 <thead className="bg-secondary text-left text-xs uppercase text-muted-foreground">
-                  <tr><th className="p-3">Produit</th><th className="p-3">Stock</th><th className="p-3">Seuil</th></tr>
+                  <tr><th className="p-3">{t("admin:stats.table.product")}</th><th className="p-3">{t("admin:stats.table.stock")}</th><th className="p-3">{t("admin:stats.table.threshold")}</th></tr>
                 </thead>
                 <tbody>
                   {[...stats.outOfStock, ...stats.lowStock].slice(0, 15).map((p) => (
@@ -215,7 +217,7 @@ export function StatsDashboard() {
                     </tr>
                   ))}
                   {stats.outOfStock.length === 0 && stats.lowStock.length === 0 && (
-                    <tr><td colSpan={3} className="p-4 text-center text-muted-foreground">Aucune alerte 🎉</td></tr>
+                    <tr><td colSpan={3} className="p-4 text-center text-muted-foreground">{t("admin:stats.empty.noAlerts")}</td></tr>
                   )}
                 </tbody>
               </table>
@@ -228,14 +230,14 @@ export function StatsDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" /> Produits les moins vendus
+              <TrendingUp className="h-4 w-4" /> {t("admin:stats.charts.worstSellersTitle")}
             </CardTitle>
-            <CardDescription>Peut-être à mettre en avant ou déstocker</CardDescription>
+            <CardDescription>{t("admin:stats.charts.worstSellersDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <table className="w-full text-sm">
               <thead className="bg-secondary text-left text-xs uppercase text-muted-foreground">
-                <tr><th className="p-3">Produit</th><th className="p-3">Unités vendues</th></tr>
+                <tr><th className="p-3">{t("admin:stats.table.product")}</th><th className="p-3">{t("admin:stats.table.unitsSold")}</th></tr>
               </thead>
               <tbody>
                 {stats.worstSellers.map((s) => (
@@ -251,13 +253,13 @@ export function StatsDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Dernières commandes</CardTitle>
-            <CardDescription>Aperçu rapide de l'activité</CardDescription>
+            <CardTitle className="text-base">{t("admin:stats.charts.recentOrdersTitle")}</CardTitle>
+            <CardDescription>{t("admin:stats.charts.recentOrdersDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <table className="w-full text-sm">
               <thead className="bg-secondary text-left text-xs uppercase text-muted-foreground">
-                <tr><th className="p-3">Client</th><th className="p-3">Total</th><th className="p-3">Statut</th></tr>
+                <tr><th className="p-3">{t("admin:stats.table.customer")}</th><th className="p-3">{t("admin:stats.table.total")}</th><th className="p-3">{t("admin:stats.table.status")}</th></tr>
               </thead>
               <tbody>
                 {stats.recent.map((o) => (
@@ -266,13 +268,13 @@ export function StatsDashboard() {
                     <td className="p-3">{formatPrice(Number(o.total))}</td>
                     <td className="p-3">
                       <Badge variant={o.status === "confirmed" ? "default" : o.status === "pending" ? "secondary" : "outline"}>
-                        {o.status === "pending" ? "En attente" : o.status === "confirmed" ? "Confirmée" : "Annulée"}
+                        {t(`admin:stats.status.${o.status}`)}
                       </Badge>
                     </td>
                   </tr>
                 ))}
                 {stats.recent.length === 0 && (
-                  <tr><td colSpan={3} className="p-4 text-center text-muted-foreground">Aucune commande</td></tr>
+                  <tr><td colSpan={3} className="p-4 text-center text-muted-foreground">{t("admin:stats.empty.noOrders")}</td></tr>
                 )}
               </tbody>
             </table>
