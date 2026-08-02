@@ -1,1 +1,263 @@
-{}
+{
+  "loading": "Chargement…",
+  "access": {
+    "restrictedTitle": "Accès restreint",
+    "restrictedText": "Votre compte ({{email}}) n'a pas le rôle administrateur. Contactez l'équipe BricoMed pour être ajouté.",
+    "idToShare": "Identifiant à communiquer :"
+  },
+  "header": {
+    "title": "Administration",
+    "connectedAs": "Connecté : {{email}}",
+    "newProduct": "Nouveau produit"
+  },
+  "tabs": {
+    "stats": "Tableau de bord",
+    "orders": "Commandes",
+    "stock": "Stock",
+    "products": "Produits",
+    "logs": "Journal d'activité",
+    "profile": "Profil"
+  },
+  "products": {
+    "table": {
+      "product": "Produit",
+      "category": "Catégorie",
+      "price": "Prix",
+      "stock": "Stock",
+      "featured": "Vedette",
+      "lastModified": "Dernière modification",
+      "actions": "Actions"
+    },
+    "badge": { "outOfStock": "Rupture", "low": "Faible" },
+    "deleteDialog": {
+      "title": "Supprimer ce produit ?",
+      "description": "Cette action est irréversible."
+    },
+    "toasts": {
+      "featuredUpdated": "Mis à jour",
+      "deleted": "Produit supprimé",
+      "created": "Produit créé",
+      "updated": "Produit mis à jour"
+    },
+    "dialog": {
+      "editTitle": "Modifier le produit",
+      "newTitle": "Nouveau produit",
+      "name": "Nom",
+      "slug": "Slug (URL)",
+      "slugPlaceholder": "auto",
+      "price": "Prix (DT)",
+      "category": "Catégorie",
+      "categoryPlaceholder": "Choisir…",
+      "stockQuantity": "Quantité en stock",
+      "lowStockThreshold": "Seuil d'alerte stock faible",
+      "shortDescription": "Description courte",
+      "description": "Description complète",
+      "images": "Images (une URL par ligne)",
+      "features": "Caractéristiques (une par ligne)",
+      "featured": "Mettre en vedette",
+      "saving": "Enregistrement…",
+      "save": "Enregistrer"
+    },
+    "fields": {
+      "name": "Nom",
+      "price": "Prix",
+      "category": "Catégorie",
+      "stock": "Stock",
+      "lowStockThreshold": "Seuil d'alerte",
+      "shortDescription": "Description courte",
+      "description": "Description",
+      "images": "Images",
+      "features": "Caractéristiques",
+      "featured": "Vedette"
+    }
+  },
+  "stats": {
+    "kpis": {
+      "products": "Produits",
+      "categories": "Catégories",
+      "orders": "Commandes",
+      "pending": "En attente",
+      "confirmed": "Confirmées",
+      "revenue": "CA total",
+      "revenueMonth": "CA du mois",
+      "lowStock": "Stock faible"
+    },
+    "attention": {
+      "title": "Points d'attention",
+      "toConfirm": "{{count}} commande(s) à confirmer",
+      "outOfStock": "{{count}} en rupture",
+      "lowStock": "{{count}} stock faible"
+    },
+    "charts": {
+      "salesEvolutionTitle": "Évolution des ventes (30 derniers jours)",
+      "salesEvolutionDesc": "CA des commandes confirmées par jour",
+      "salesByCategoryTitle": "Ventes par catégorie",
+      "salesByCategoryDesc": "Répartition des unités vendues",
+      "topProductsTitle": "Top produits vendus",
+      "topProductsDesc": "Meilleures ventes (unités)",
+      "outOfStockTitle": "Rupture & stock faible",
+      "outOfStockDesc": "À réapprovisionner en priorité",
+      "worstSellersTitle": "Produits les moins vendus",
+      "worstSellersDesc": "Peut-être à mettre en avant ou déstocker",
+      "recentOrdersTitle": "Dernières commandes",
+      "recentOrdersDesc": "Aperçu rapide de l'activité"
+    },
+    "table": {
+      "product": "Produit",
+      "stock": "Stock",
+      "threshold": "Seuil",
+      "unitsSold": "Unités vendues",
+      "customer": "Client",
+      "total": "Total",
+      "status": "Statut"
+    },
+    "empty": {
+      "noAlerts": "Aucune alerte 🎉",
+      "noOrders": "Aucune commande"
+    },
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "cancelled": "Annulée"
+    }
+  },
+  "orders": {
+    "tabs": {
+      "all": "Toutes ({{count}})",
+      "pending": "En attente ({{count}})",
+      "confirmed": "Confirmées ({{count}})",
+      "cancelled": "Annulées ({{count}})"
+    },
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "cancelled": "Annulée"
+    },
+    "details": "Détails ({{count}} article{{plural}})",
+    "governorate": "Gouvernorat :",
+    "address": "Adresse :",
+    "notes": "Notes :",
+    "confirm": "Confirmer (décrémente le stock)",
+    "cancel": "Annuler",
+    "informClient": "📱 Informer le client",
+    "informUnavailability": "❌ Informer d'une indisponibilité",
+    "empty": "Aucune commande.",
+    "toasts": {
+      "invalidPhone": "Numéro du client vide ou invalide — impossible d'ouvrir WhatsApp.",
+      "confirmed": "Commande confirmée — stock mis à jour",
+      "cancelled": "Commande annulée"
+    },
+    "whatsapp": {
+      "confirmed": "Bonjour {{name}} 👋,\n\nNous avons le plaisir de vous informer que votre commande #{{ref}} a bien été confirmée.\n\n📦 Elle est actuellement en préparation.\n💰 Montant total : {{total}} DT.\n\nNous vous contacterons dès qu'elle sera prête.\n\nMerci pour votre confiance.\nL'équipe Quicaillerie.",
+      "unavailable": "Bonjour {{name}},\n\nNous sommes désolés.\nVotre commande #{{ref}} ne peut malheureusement pas être validée car un ou plusieurs produits sont actuellement indisponibles.\n\nMerci de nous contacter afin que nous puissions vous proposer une solution ou un produit de remplacement.\n\nNous vous remercions de votre compréhension.\nL'équipe Quicaillerie."
+    }
+  },
+  "stock": {
+    "management": {
+      "title": "Gestion du stock",
+      "description": "Ajuster rapidement les quantités disponibles",
+      "searchPlaceholder": "Rechercher un produit…"
+    },
+    "table": {
+      "product": "Produit",
+      "stock": "Stock",
+      "threshold": "Seuil",
+      "adjustment": "Ajustement",
+      "reason": "Motif",
+      "actions": "Actions"
+    },
+    "badge": { "outOfStock": "Rupture", "low": "Faible" },
+    "reasonPlaceholder": "ex: réappro",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "toasts": { "updated": "Stock mis à jour ({{sign}}{{change}})" },
+    "defaultReasons": {
+      "restock": "Réapprovisionnement",
+      "correction": "Correction d'inventaire"
+    },
+    "history": {
+      "title": "Historique des mouvements",
+      "description": "200 derniers mouvements",
+      "date": "Date",
+      "product": "Produit",
+      "variation": "Variation",
+      "reason": "Motif",
+      "empty": "Aucun mouvement enregistré."
+    }
+  },
+  "profile": {
+    "account": {
+      "title": "Compte",
+      "role": "Rôle : administrateur",
+      "id": "Identifiant :",
+      "usernameLabel": "Nom d'utilisateur (affiché dans le journal d'activité)",
+      "usernamePlaceholder": "ex: aziz",
+      "save": "Enregistrer le nom",
+      "saving": "Enregistrement…"
+    },
+    "email": {
+      "title": "Adresse email",
+      "label": "Email",
+      "save": "Modifier l'email",
+      "saving": "Envoi…",
+      "hint": "Un lien de confirmation sera envoyé à la nouvelle adresse."
+    },
+    "password": {
+      "title": "Mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirm": "Confirmer",
+      "save": "Changer le mot de passe",
+      "saving": "Enregistrement…"
+    },
+    "toasts": {
+      "usernameRequired": "Nom d'utilisateur requis",
+      "usernameUnchanged": "Nom d'utilisateur identique",
+      "usernameUpdated": "Nom d'utilisateur mis à jour",
+      "emailUnchanged": "Adresse identique",
+      "emailSent": "Un email de confirmation a été envoyé à la nouvelle adresse.",
+      "passwordTooShort": "6 caractères minimum",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "passwordUpdated": "Mot de passe mis à jour"
+    }
+  },
+  "logs": {
+    "title": "Journal d'activité",
+    "description": "Historique en lecture seule des actions administrateur — {{count}} entrée(s)",
+    "refresh": "Actualiser",
+    "exportPdf": "Exporter en PDF",
+    "exportExcel": "Exporter en Excel",
+    "search": "Recherche",
+    "searchPlaceholder": "Produit, action, admin…",
+    "admin": "Administrateur",
+    "allAdmins": "Tous",
+    "actionType": "Type d'action",
+    "allActions": "Toutes",
+    "from": "Du",
+    "to": "Au",
+    "resetFilters": "Réinitialiser les filtres",
+    "table": {
+      "date": "Date",
+      "admin": "Admin",
+      "action": "Action",
+      "element": "Élément",
+      "details": "Détails",
+      "ip": "IP"
+    },
+    "empty": "Aucune entrée.",
+    "pdf": {
+      "title": "BricoMed — Journal d'activité",
+      "exportDate": "Export du {{date}} — {{count}} entrée(s)"
+    },
+    "actionLabels": {
+      "Connexion": "Connexion",
+      "Déconnexion": "Déconnexion",
+      "Désactivation vedette": "Désactivation vedette",
+      "Activation vedette": "Activation vedette",
+      "Suppression produit": "Suppression produit",
+      "Modification produit": "Modification produit",
+      "Ajout produit": "Ajout produit",
+      "Modification profil": "Modification profil",
+      "Changement de mot de passe": "Changement de mot de passe"
+    }
+  }
+}
