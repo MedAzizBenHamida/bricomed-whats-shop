@@ -100,8 +100,19 @@ export function StockTab() {
                         />
                       </td>
                       <td className="p-3">
+                        <Select
+                          value={types[p.id] ?? "entry"}
+                          onValueChange={(v) => setTypes((s) => ({ ...s, [p.id]: v as StockMovementType }))}
+                        >
+                          <SelectTrigger className="h-8 w-44"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {MOVEMENT_TYPES.filter((ty) => ty !== "sale").map((ty) => (
+                              <SelectItem key={ty} value={ty}>{t(`admin:movements.types.${ty}`)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <Input
-                          className="h-8 w-40"
+                          className="mt-1 h-8 w-44"
                           placeholder={t("admin:stock.reasonPlaceholder")}
                           value={reason[p.id] ?? ""}
                           onChange={(e) => setReason((s) => ({ ...s, [p.id]: e.target.value }))}
@@ -131,39 +142,17 @@ export function StockTab() {
           </CardTitle>
           <CardDescription>{t("admin:stock.history.description")}</CardDescription>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent>
           <div className="max-h-[500px] overflow-y-auto">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-secondary text-left text-xs uppercase text-muted-foreground">
-                <tr>
-                  <th className="p-3">{t("admin:stock.history.date")}</th>
-                  <th className="p-3">{t("admin:stock.history.product")}</th>
-                  <th className="p-3">{t("admin:stock.history.variation")}</th>
-                  <th className="p-3">{t("admin:stock.history.reason")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {movements.map((m) => {
-                  const p = productMap.get(m.product_id);
-                  return (
-                    <tr key={m.id} className="border-t">
-                      <td className="p-3 text-muted-foreground">{new Date(m.created_at).toLocaleString()}</td>
-                      <td className="p-3 font-medium">{p?.name ?? "—"}</td>
-                      <td className={`p-3 font-bold ${m.change >= 0 ? "text-emerald-600" : "text-destructive"}`}>
-                        {m.change > 0 ? "+" : ""}{m.change}
-                      </td>
-                      <td className="p-3">{m.reason}</td>
-                    </tr>
-                  );
-                })}
-                {movements.length === 0 && (
-                  <tr><td colSpan={4} className="p-6 text-center text-muted-foreground">{t("admin:stock.history.empty")}</td></tr>
-                )}
-              </tbody>
-            </table>
+            <MovementsTable
+              movements={movements.slice(0, 50)}
+              productName={(id) => productMap.get(id)?.name ?? "—"}
+              emptyLabel={t("admin:stock.history.empty")}
+            />
           </div>
         </CardContent>
       </Card>
+
     </div>
   );
 }
