@@ -16,7 +16,8 @@
     "stock": "المخزون",
     "products": "المنتجات",
     "logs": "سجل النشاط",
-    "profile": "الملف الشخصي"
+    "profile": "الملف الشخصي",
+    "movements": "الحركات"
   },
   "products": {
     "table": {
@@ -28,7 +29,10 @@
       "lastModified": "آخر تعديل",
       "actions": "إجراءات"
     },
-    "badge": { "outOfStock": "نفدت الكمية", "low": "منخفض" },
+    "badge": {
+      "outOfStock": "نفدت الكمية",
+      "low": "منخفض"
+    },
     "deleteDialog": {
       "title": "هل تريد حذف هذا المنتج؟",
       "description": "هذا الإجراء لا يمكن التراجع عنه."
@@ -166,11 +170,16 @@
       "reason": "السبب",
       "actions": "إجراءات"
     },
-    "badge": { "outOfStock": "نفدت الكمية", "low": "منخفض" },
+    "badge": {
+      "outOfStock": "نفدت الكمية",
+      "low": "منخفض"
+    },
     "reasonPlaceholder": "مثال: إعادة تزويد",
     "add": "إضافة",
     "remove": "سحب",
-    "toasts": { "updated": "تم تحديث المخزون ({{sign}}{{change}})" },
+    "toasts": {
+      "updated": "تم تحديث المخزون ({{sign}}{{change}})"
+    },
     "defaultReasons": {
       "restock": "إعادة تزويد",
       "correction": "تصحيح الجرد"
@@ -183,7 +192,9 @@
       "variation": "التغيير",
       "reason": "السبب",
       "empty": "لا توجد حركات مسجلة."
-    }
+    },
+    "movementType": "نوع الحركة",
+    "reasonRequired": "المُعطى إجباري"
   },
   "profile": {
     "account": {
@@ -259,5 +270,51 @@
       "Modification profil": "تعديل الملف الشخصي",
       "Changement de mot de passe": "تغيير كلمة المرور"
     }
+  },
+  "movements": {
+    "title": "حركات المخزون",
+    "description": "تتبّع كامل لتغيّرات المخزون",
+    "searchPlaceholder": "ابحث عن منتج…",
+    "filters": {
+      "type": "نوع الحركة",
+      "admin": "المسؤول",
+      "from": "من",
+      "to": "إلى",
+      "all": "الكل",
+      "reset": "إعادة ضبط"
+    },
+    "table": {
+      "date": "التاريخ",
+      "product": "المنتج",
+      "movement": "الحركة",
+      "before": "قبل",
+      "after": "بعد",
+      "type": "النوع",
+      "admin": "المسؤول",
+      "reference": "المرجع",
+      "comment": "ملاحظة"
+    },
+    "types": {
+      "entry": "إدخال",
+      "sale": "بيع",
+      "manual": "تعديل يدوي",
+      "inventory": "جرد",
+      "return": "إرجاع للمخزون"
+    },
+    "empty": "لا توجد حركات مسجّلة.",
+    "count": "{{count}} حركة",
+    "exportPdf": "تصدير PDF",
+    "exportExcel": "تصدير Excel",
+    "pdf": {
+      "title": "حركات المخزون",
+      "exportDate": "تم التصدير في {{date}} — {{count}} حركة"
+    },
+    "productHistory": {
+      "tab": "سجل الحركات",
+      "info": "المعلومات",
+      "empty": "لا توجد حركات لهذا المنتج.",
+      "saveFirst": "احفظ المنتج لعرض سجلّه."
+    },
+    "reasonRequired": "المُعطى إجباري"
   }
 }

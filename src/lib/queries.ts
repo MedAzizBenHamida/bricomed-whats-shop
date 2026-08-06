@@ -54,6 +54,8 @@ export type Order = {
   order_items?: OrderItem[];
 };
 
+export type StockMovementType = "entry" | "sale" | "manual" | "inventory" | "return";
+
 export type StockMovement = {
   id: string;
   product_id: string;
@@ -61,6 +63,12 @@ export type StockMovement = {
   reason: string;
   order_id: string | null;
   created_at: string;
+  movement_type: StockMovementType;
+  stock_before: number | null;
+  stock_after: number | null;
+  admin_username: string | null;
+  reference: string | null;
+  comment: string | null;
 };
 
 export const categoriesQuery = queryOptions({
@@ -118,8 +126,23 @@ export const stockMovementsQuery = queryOptions({
       .from("stock_movements")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(200);
+      .limit(1000);
     if (error) throw error;
     return (data ?? []) as StockMovement[];
   },
 });
+
+export const productMovementsQuery = (productId: string) =>
+  queryOptions({
+    queryKey: ["stock_movements", "product", productId],
+    queryFn: async (): Promise<StockMovement[]> => {
+      const { data, error } = await supabase
+        .from("stock_movements")
+        .select("*")
+        .eq("product_id", productId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as StockMovement[];
+    },
+    enabled: !!productId,
+  });

@@ -16,7 +16,8 @@
     "stock": "Stock",
     "products": "Produits",
     "logs": "Journal d'activité",
-    "profile": "Profil"
+    "profile": "Profil",
+    "movements": "Mouvements"
   },
   "products": {
     "table": {
@@ -28,7 +29,10 @@
       "lastModified": "Dernière modification",
       "actions": "Actions"
     },
-    "badge": { "outOfStock": "Rupture", "low": "Faible" },
+    "badge": {
+      "outOfStock": "Rupture",
+      "low": "Faible"
+    },
     "deleteDialog": {
       "title": "Supprimer ce produit ?",
       "description": "Cette action est irréversible."
@@ -166,11 +170,16 @@
       "reason": "Motif",
       "actions": "Actions"
     },
-    "badge": { "outOfStock": "Rupture", "low": "Faible" },
+    "badge": {
+      "outOfStock": "Rupture",
+      "low": "Faible"
+    },
     "reasonPlaceholder": "ex: réappro",
     "add": "Ajouter",
     "remove": "Retirer",
-    "toasts": { "updated": "Stock mis à jour ({{sign}}{{change}})" },
+    "toasts": {
+      "updated": "Stock mis à jour ({{sign}}{{change}})"
+    },
     "defaultReasons": {
       "restock": "Réapprovisionnement",
       "correction": "Correction d'inventaire"
@@ -183,7 +192,9 @@
       "variation": "Variation",
       "reason": "Motif",
       "empty": "Aucun mouvement enregistré."
-    }
+    },
+    "movementType": "Type de mouvement",
+    "reasonRequired": "Le motif est obligatoire"
   },
   "profile": {
     "account": {
@@ -259,5 +270,51 @@
       "Modification profil": "Modification profil",
       "Changement de mot de passe": "Changement de mot de passe"
     }
+  },
+  "movements": {
+    "title": "Mouvements de stock",
+    "description": "Traçabilité complète des variations de stock",
+    "searchPlaceholder": "Rechercher un produit…",
+    "filters": {
+      "type": "Type de mouvement",
+      "admin": "Administrateur",
+      "from": "Du",
+      "to": "Au",
+      "all": "Tous",
+      "reset": "Réinitialiser"
+    },
+    "table": {
+      "date": "Date",
+      "product": "Produit",
+      "movement": "Mouvement",
+      "before": "Avant",
+      "after": "Après",
+      "type": "Type",
+      "admin": "Admin",
+      "reference": "Référence",
+      "comment": "Commentaire"
+    },
+    "types": {
+      "entry": "Entrée",
+      "sale": "Vente",
+      "manual": "Modification manuelle",
+      "inventory": "Inventaire",
+      "return": "Retour en stock"
+    },
+    "empty": "Aucun mouvement enregistré.",
+    "count": "{{count}} mouvement(s)",
+    "exportPdf": "Exporter PDF",
+    "exportExcel": "Exporter Excel",
+    "pdf": {
+      "title": "Mouvements de stock",
+      "exportDate": "Exporté le {{date}} — {{count}} mouvement(s)"
+    },
+    "productHistory": {
+      "tab": "Historique des mouvements",
+      "info": "Informations",
+      "empty": "Aucun mouvement pour ce produit.",
+      "saveFirst": "Enregistrez le produit pour voir son historique."
+    },
+    "reasonRequired": "Le motif est obligatoire"
   }
 }

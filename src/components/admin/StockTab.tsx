@@ -1,14 +1,16 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { productsQuery, stockMovementsQuery, type Product } from "@/lib/queries";
+import { productsQuery, stockMovementsQuery, type Product, type StockMovementType } from "@/lib/queries";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Minus, History, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { MOVEMENT_TYPES, MovementsTable } from "./MovementsTable";
 
 export function StockTab() {
   const { t } = useTranslation(["admin", "common"]);
@@ -18,6 +20,7 @@ export function StockTab() {
   const [search, setSearch] = useState("");
   const [amounts, setAmounts] = useState<Record<string, number>>({});
   const [reason, setReason] = useState<Record<string, string>>({});
+  const [types, setTypes] = useState<Record<string, StockMovementType>>({});
 
   const productMap = useMemo(() => new Map(products.map((p) => [p.id, p])), [products]);
 
@@ -25,11 +28,14 @@ export function StockTab() {
 
   const adjust = async (p: Product, change: number) => {
     if (!change) return;
-    const _reason = reason[p.id] || (change > 0 ? t("admin:stock.defaultReasons.restock") : t("admin:stock.defaultReasons.correction"));
+    const _type: StockMovementType = types[p.id] ?? (change > 0 ? "entry" : "manual");
+    const _reason = (reason[p.id] || "").trim() || t(`admin:movements.types.${_type}`);
     const { error } = await supabase.rpc("adjust_stock", {
       _product_id: p.id,
       _change: change,
       _reason,
+      _type,
+      _comment: null,
     });
     if (error) return toast.error(error.message);
     toast.success(t("admin:stock.toasts.updated", { sign: change > 0 ? "+" : "", change }));
@@ -40,6 +46,7 @@ export function StockTab() {
     qc.invalidateQueries({ queryKey: ["activity_logs"] });
 
   };
+
 
   return (
     <div className="space-y-6">
@@ -93,8 +100,19 @@ export function StockTab() {
                         />
                       </td>
                       <td className="p-3">
+                        <Select
+                          value={types[p.id] ?? "entry"}
+                          onValueChange={(v) => setTypes((s) => ({ ...s, [p.id]: v as StockMovementType }))}
+                        >
+                          <SelectTrigger className="h-8 w-44"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {MOVEMENT_TYPES.filter((ty) => ty !== "sale").map((ty) => (
+                              <SelectItem key={ty} value={ty}>{t(`admin:movements.types.${ty}`)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <Input
-                          className="h-8 w-40"
+                          className="mt-1 h-8 w-44"
                           placeholder={t("admin:stock.reasonPlaceholder")}
                           value={reason[p.id] ?? ""}
                           onChange={(e) => setReason((s) => ({ ...s, [p.id]: e.target.value }))}
@@ -124,39 +142,17 @@ export function StockTab() {
           </CardTitle>
           <CardDescription>{t("admin:stock.history.description")}</CardDescription>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent>
           <div className="max-h-[500px] overflow-y-auto">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-secondary text-left text-xs uppercase text-muted-foreground">
-                <tr>
-                  <th className="p-3">{t("admin:stock.history.date")}</th>
-                  <th className="p-3">{t("admin:stock.history.product")}</th>
-                  <th className="p-3">{t("admin:stock.history.variation")}</th>
-                  <th className="p-3">{t("admin:stock.history.reason")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {movements.map((m) => {
-                  const p = productMap.get(m.product_id);
-                  return (
-                    <tr key={m.id} className="border-t">
-                      <td className="p-3 text-muted-foreground">{new Date(m.created_at).toLocaleString()}</td>
-                      <td className="p-3 font-medium">{p?.name ?? "—"}</td>
-                      <td className={`p-3 font-bold ${m.change >= 0 ? "text-emerald-600" : "text-destructive"}`}>
-                        {m.change > 0 ? "+" : ""}{m.change}
-                      </td>
-                      <td className="p-3">{m.reason}</td>
-                    </tr>
-                  );
-                })}
-                {movements.length === 0 && (
-                  <tr><td colSpan={4} className="p-6 text-center text-muted-foreground">{t("admin:stock.history.empty")}</td></tr>
-                )}
-              </tbody>
-            </table>
+            <MovementsTable
+              movements={movements.slice(0, 50)}
+              productName={(id) => productMap.get(id)?.name ?? "—"}
+              emptyLabel={t("admin:stock.history.empty")}
+            />
           </div>
         </CardContent>
       </Card>
+
     </div>
   );
 }
