@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package, ShoppingCart, Boxes, UserCog, ScrollText } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package, ShoppingCart, Boxes, UserCog, ScrollText, ArrowLeftRight } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { StatsDashboard } from "@/components/admin/StatsDashboard";
@@ -373,6 +373,15 @@ function ProductDialog({ product, categories, username, onDone }: { product: Pro
       <DialogHeader>
         <DialogTitle>{product ? t("admin:products.dialog.editTitle") : t("admin:products.dialog.newTitle")}</DialogTitle>
       </DialogHeader>
+      <Tabs defaultValue="info">
+        <TabsList className="mb-4">
+          <TabsTrigger value="info">{t("admin:movements.productHistory.info")}</TabsTrigger>
+          <TabsTrigger value="history" className="gap-2"><ArrowLeftRight className="h-4 w-4" /> {t("admin:movements.productHistory.tab")}</TabsTrigger>
+        </TabsList>
+        <TabsContent value="history">
+          {product ? <ProductMovements productId={product.id} /> : <p className="p-6 text-center text-sm text-muted-foreground">{t("admin:movements.productHistory.saveFirst")}</p>}
+        </TabsContent>
+        <TabsContent value="info">
       <form onSubmit={save} className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
@@ -431,6 +440,14 @@ function ProductDialog({ product, categories, username, onDone }: { product: Pro
           <Button type="submit" disabled={saving}>{saving ? t("admin:products.dialog.saving") : t("admin:products.dialog.save")}</Button>
         </DialogFooter>
       </form>
+        </TabsContent>
+      </Tabs>
     </DialogContent>
   );
+}
+
+function ProductMovements({ productId }: { productId: string }) {
+  const { t } = useTranslation(["admin"]);
+  const { data: movements = [] } = useQuery(productMovementsQuery(productId));
+  return <MovementsTable movements={movements} emptyLabel={t("admin:movements.productHistory.empty")} />;
 }
