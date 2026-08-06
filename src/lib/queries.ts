@@ -54,6 +54,8 @@ export type Order = {
   order_items?: OrderItem[];
 };
 
+export type StockMovementType = "entry" | "sale" | "manual" | "inventory" | "return";
+
 export type StockMovement = {
   id: string;
   product_id: string;
@@ -61,6 +63,12 @@ export type StockMovement = {
   reason: string;
   order_id: string | null;
   created_at: string;
+  movement_type: StockMovementType;
+  stock_before: number | null;
+  stock_after: number | null;
+  admin_username: string | null;
+  reference: string | null;
+  comment: string | null;
 };
 
 export const categoriesQuery = queryOptions({
