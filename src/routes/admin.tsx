@@ -17,6 +17,9 @@ import { OrdersTab } from "@/components/admin/OrdersTab";
 import { StockTab } from "@/components/admin/StockTab";
 import { ProfileTab } from "@/components/admin/ProfileTab";
 import { ActivityLogTab } from "@/components/admin/ActivityLogTab";
+import { StockMovementsTab } from "@/components/admin/StockMovementsTab";
+import { MovementsTable } from "@/components/admin/MovementsTable";
+import { productMovementsQuery } from "@/lib/queries";
 import { ensureProfile, logActivity, diffProduct } from "@/lib/activity-log";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -186,6 +189,7 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
             {pendingCount > 0 && <Badge variant="secondary" className="ms-1">{pendingCount}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="stock" className="gap-2"><Boxes className="h-4 w-4" /> {t("admin:tabs.stock")}</TabsTrigger>
+          <TabsTrigger value="movements" className="gap-2"><ArrowLeftRight className="h-4 w-4" /> {t("admin:tabs.movements")}</TabsTrigger>
           <TabsTrigger value="products" className="gap-2"><Package className="h-4 w-4" /> {t("admin:tabs.products")}</TabsTrigger>
           <TabsTrigger value="logs" className="gap-2"><ScrollText className="h-4 w-4" /> {t("admin:tabs.logs")}</TabsTrigger>
           <TabsTrigger value="profile" className="gap-2"><UserCog className="h-4 w-4" /> {t("admin:tabs.profile")}</TabsTrigger>
@@ -194,6 +198,7 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
         <TabsContent value="stats"><StatsDashboard /></TabsContent>
         <TabsContent value="orders"><OrdersTab /></TabsContent>
         <TabsContent value="stock"><StockTab /></TabsContent>
+        <TabsContent value="movements"><StockMovementsTab /></TabsContent>
         <TabsContent value="logs"><ActivityLogTab /></TabsContent>
         <TabsContent value="profile"><ProfileTab email={email} userId={userId} /></TabsContent>
 
