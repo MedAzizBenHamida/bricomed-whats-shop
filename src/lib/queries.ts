@@ -126,8 +126,23 @@ export const stockMovementsQuery = queryOptions({
       .from("stock_movements")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(200);
+      .limit(1000);
     if (error) throw error;
     return (data ?? []) as StockMovement[];
   },
 });
+
+export const productMovementsQuery = (productId: string) =>
+  queryOptions({
+    queryKey: ["stock_movements", "product", productId],
+    queryFn: async (): Promise<StockMovement[]> => {
+      const { data, error } = await supabase
+        .from("stock_movements")
+        .select("*")
+        .eq("product_id", productId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as StockMovement[];
+    },
+    enabled: !!productId,
+  });
