@@ -267,31 +267,49 @@ export type Database = {
       }
       stock_movements: {
         Row: {
+          admin_username: string | null
           change: number
+          comment: string | null
           created_at: string
           created_by: string | null
           id: string
+          movement_type: Database["public"]["Enums"]["stock_movement_type"]
           order_id: string | null
           product_id: string
           reason: string
+          reference: string | null
+          stock_after: number | null
+          stock_before: number | null
         }
         Insert: {
+          admin_username?: string | null
           change: number
+          comment?: string | null
           created_at?: string
           created_by?: string | null
           id?: string
+          movement_type?: Database["public"]["Enums"]["stock_movement_type"]
           order_id?: string | null
           product_id: string
           reason: string
+          reference?: string | null
+          stock_after?: number | null
+          stock_before?: number | null
         }
         Update: {
+          admin_username?: string | null
           change?: number
+          comment?: string | null
           created_at?: string
           created_by?: string | null
           id?: string
+          movement_type?: Database["public"]["Enums"]["stock_movement_type"]
           order_id?: string | null
           product_id?: string
           reason?: string
+          reference?: string | null
+          stock_after?: number | null
+          stock_before?: number | null
         }
         Relationships: [
           {
@@ -336,10 +354,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      adjust_stock: {
-        Args: { _change: number; _product_id: string; _reason: string }
-        Returns: undefined
-      }
+      adjust_stock:
+        | {
+            Args: { _change: number; _product_id: string; _reason: string }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              _change: number
+              _comment?: string
+              _product_id: string
+              _reason: string
+              _type?: string
+            }
+            Returns: undefined
+          }
       cancel_order: { Args: { _order_id: string }; Returns: undefined }
       confirm_order: { Args: { _order_id: string }; Returns: undefined }
       current_admin_username: { Args: never; Returns: string }
@@ -350,10 +379,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      set_stock_quantity: {
+        Args: {
+          _comment?: string
+          _new_quantity: number
+          _product_id: string
+          _reason: string
+          _type?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"
       order_status: "pending" | "confirmed" | "cancelled"
+      stock_movement_type: "entry" | "sale" | "manual" | "inventory" | "return"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -483,6 +523,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       order_status: ["pending", "confirmed", "cancelled"],
+      stock_movement_type: ["entry", "sale", "manual", "inventory", "return"],
     },
   },
 } as const
