@@ -2,8 +2,12 @@
   "loading": "Chargement…",
   "access": {
     "restrictedTitle": "Accès restreint",
-    "restrictedText": "Votre compte ({{email}}) n'a pas le rôle administrateur. Contactez l'équipe BricoMed pour être ajouté.",
-    "idToShare": "Identifiant à communiquer :"
+    "restrictedText": "Votre compte ({{email}}) n'a pas le rôle administrateur.",
+    "idToShare": "Identifiant à communiquer :",
+    "pendingTitle": "Compte en attente d'approbation",
+    "pendingText": "Votre compte ({{email}}) a bien été créé. Un super administrateur doit l'approuver avant que vous puissiez accéder au tableau de bord.",
+    "disabledTitle": "Compte désactivé",
+    "disabledText": "Votre compte ({{email}}) a été désactivé. Contactez le super administrateur."
   },
   "header": {
     "title": "Administration",
@@ -17,7 +21,9 @@
     "products": "Produits",
     "logs": "Journal d'activité",
     "profile": "Profil",
-    "movements": "Mouvements"
+    "movements": "Mouvements",
+    "users": "Administrateurs",
+    "settings": "Paramètres"
   },
   "products": {
     "table": {
@@ -84,7 +90,9 @@
       "confirmed": "Confirmées",
       "revenue": "CA total",
       "revenueMonth": "CA du mois",
-      "lowStock": "Stock faible"
+      "lowStock": "Stock faible",
+      "revenueDay": "CA du jour",
+      "revenueYear": "CA annuel"
     },
     "attention": {
       "title": "Points d'attention",
@@ -316,5 +324,66 @@
       "saveFirst": "Enregistrez le produit pour voir son historique."
     },
     "reasonRequired": "Le motif est obligatoire"
+  },
+  "users": {
+    "empty": "Aucun compte",
+    "you": "vous",
+    "pendingTitle": "Nouvelle demande d'accès administrateur",
+    "pendingText": "{{count}} compte(s) en attente d'approbation.",
+    "table": {
+      "username": "Identifiant",
+      "fullName": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "status": "Statut",
+      "createdAt": "Date de création",
+      "actions": "Actions"
+    },
+    "roles": {
+      "super_admin": "Super administrateur",
+      "admin": "Administrateur",
+      "user": "Utilisateur"
+    },
+    "statuses": {
+      "pending": "🟡 En attente",
+      "active": "🟢 Actif",
+      "disabled": "🔴 Désactivé"
+    },
+    "actions": {
+      "approve": "Approuver",
+      "reject": "Refuser",
+      "disable": "Désactiver",
+      "enable": "Réactiver"
+    },
+    "deleteDialog": {
+      "title": "Supprimer cet administrateur ?",
+      "description": "Le compte « {{name}} » sera définitivement supprimé."
+    },
+    "toasts": {
+      "statusUpdated": "Statut mis à jour",
+      "roleUpdated": "Rôle mis à jour",
+      "deleted": "Compte supprimé"
+    }
+  },
+  "settings": {
+    "shopTitle": "Informations de la boutique",
+    "shopDescription": "Coordonnées affichées sur le site.",
+    "hoursTitle": "Horaires d'ouverture",
+    "generalTitle": "Paramètres généraux",
+    "thresholdHelp": "Seuil par défaut d'alerte de stock faible.",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "saved": "Paramètres enregistrés",
+    "fields": {
+      "name": "Nom de la boutique",
+      "email": "Email",
+      "phone": "Téléphone",
+      "whatsapp": "WhatsApp",
+      "address": "Adresse",
+      "monfri": "Lundi – Vendredi",
+      "sat": "Samedi",
+      "sun": "Dimanche",
+      "threshold": "Seuil d'alerte de stock"
+    }
   }
 }

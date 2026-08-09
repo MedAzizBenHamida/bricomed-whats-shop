@@ -2,8 +2,12 @@
   "loading": "جارٍ التحميل…",
   "access": {
     "restrictedTitle": "وصول مقيّد",
-    "restrictedText": "حسابك ({{email}}) لا يملك صلاحية المسؤول. تواصل مع فريق BricoMed لإضافتك.",
-    "idToShare": "المعرّف الذي يجب إرساله:"
+    "restrictedText": "حسابك ({{email}}) لا يملك صلاحية المسؤول.",
+    "idToShare": "المعرّف الذي يجب إرساله:",
+    "pendingTitle": "الحساب في انتظار الموافقة",
+    "pendingText": "تم إنشاء حسابك ({{email}}). يجب أن يوافق عليه المسؤول الأعلى قبل الدخول إلى لوحة التحكم.",
+    "disabledTitle": "حساب معطّل",
+    "disabledText": "تم تعطيل حسابك ({{email}}). اتصل بالمسؤول الأعلى."
   },
   "header": {
     "title": "الإدارة",
@@ -17,7 +21,9 @@
     "products": "المنتجات",
     "logs": "سجل النشاط",
     "profile": "الملف الشخصي",
-    "movements": "الحركات"
+    "movements": "الحركات",
+    "users": "المسؤولون",
+    "settings": "الإعدادات"
   },
   "products": {
     "table": {
@@ -84,7 +90,9 @@
       "confirmed": "مؤكدة",
       "revenue": "إجمالي الإيرادات",
       "revenueMonth": "إيرادات الشهر",
-      "lowStock": "مخزون منخفض"
+      "lowStock": "مخزون منخفض",
+      "revenueDay": "مداخيل اليوم",
+      "revenueYear": "المداخيل السنوية"
     },
     "attention": {
       "title": "نقاط تستدعي الانتباه",
@@ -316,5 +324,66 @@
       "saveFirst": "احفظ المنتج لعرض سجلّه."
     },
     "reasonRequired": "المُعطى إجباري"
+  },
+  "users": {
+    "empty": "لا توجد حسابات",
+    "you": "أنت",
+    "pendingTitle": "طلب وصول جديد كمسؤول",
+    "pendingText": "{{count}} حساب في انتظار الموافقة.",
+    "table": {
+      "username": "اسم المستخدم",
+      "fullName": "الاسم",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "actions": "إجراءات"
+    },
+    "roles": {
+      "super_admin": "مسؤول أعلى",
+      "admin": "مسؤول",
+      "user": "مستخدم"
+    },
+    "statuses": {
+      "pending": "🟡 في الانتظار",
+      "active": "🟢 نشط",
+      "disabled": "🔴 معطّل"
+    },
+    "actions": {
+      "approve": "موافقة",
+      "reject": "رفض",
+      "disable": "تعطيل",
+      "enable": "تفعيل"
+    },
+    "deleteDialog": {
+      "title": "حذف هذا المسؤول؟",
+      "description": "سيتم حذف حساب « {{name}} » نهائيًا."
+    },
+    "toasts": {
+      "statusUpdated": "تم تحديث الحالة",
+      "roleUpdated": "تم تحديث الدور",
+      "deleted": "تم حذف الحساب"
+    }
+  },
+  "settings": {
+    "shopTitle": "معلومات المتجر",
+    "shopDescription": "بيانات الاتصال المعروضة في الموقع.",
+    "hoursTitle": "أوقات العمل",
+    "generalTitle": "إعدادات عامة",
+    "thresholdHelp": "الحد الافتراضي لتنبيه المخزون المنخفض.",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "saved": "تم حفظ الإعدادات",
+    "fields": {
+      "name": "اسم المتجر",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "whatsapp": "واتساب",
+      "address": "العنوان",
+      "monfri": "الاثنين – الجمعة",
+      "sat": "السبت",
+      "sun": "الأحد",
+      "threshold": "حد تنبيه المخزون"
+    }
   }
 }

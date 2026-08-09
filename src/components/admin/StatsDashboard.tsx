@@ -16,7 +16,7 @@ import {
 
 const COLORS = ["#F57C00", "#212121", "#FB923C", "#FDBA74", "#FED7AA", "#78716C", "#A8A29E", "#D6D3D1"];
 
-export function StatsDashboard() {
+export function StatsDashboard({ showRevenue = true }: { showRevenue?: boolean } = {}) {
   const { t } = useTranslation(["admin", "common"]);
   const { data: products = [] } = useQuery(productsQuery);
   const { data: categories = [] } = useQuery(categoriesQuery);
@@ -30,9 +30,13 @@ export function StatsDashboard() {
 
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const revenueMonth = confirmed
-      .filter((o) => new Date(o.confirmed_at ?? o.created_at) >= monthStart)
-      .reduce((s, o) => s + Number(o.total), 0);
+    const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+    const sumSince = (from: Date) =>
+      confirmed.filter((o) => new Date(o.confirmed_at ?? o.created_at) >= from).reduce((s, o) => s + Number(o.total), 0);
+    const revenueMonth = sumSince(monthStart);
+    const revenueDay = sumSince(dayStart);
+    const revenueYear = sumSince(yearStart);
 
     // Product sales aggregation from confirmed orders only
     const soldByProduct = new Map<string, { name: string; qty: number; revenue: number; category_id: string | null }>();
@@ -82,7 +86,7 @@ export function StatsDashboard() {
 
     return {
       totalOrders, pending: pending.length, confirmed: confirmed.length,
-      revenue, revenueMonth, bestSellers, worstSellers, salesByCategory,
+      revenue, revenueMonth, revenueDay, revenueYear, bestSellers, worstSellers, salesByCategory,
       outOfStock, lowStock, days, recent,
     };
   }, [products, categories, orders]);
@@ -93,8 +97,14 @@ export function StatsDashboard() {
     { label: t("admin:stats.kpis.orders"), value: stats.totalOrders, icon: ShoppingCart, tone: "bg-secondary text-foreground" },
     { label: t("admin:stats.kpis.pending"), value: stats.pending, icon: Clock, tone: "bg-amber-500/10 text-amber-600" },
     { label: t("admin:stats.kpis.confirmed"), value: stats.confirmed, icon: CheckCircle2, tone: "bg-emerald-500/10 text-emerald-600" },
-    { label: t("admin:stats.kpis.revenue"), value: formatPrice(stats.revenue), icon: DollarSign, tone: "bg-primary/10 text-primary" },
-    { label: t("admin:stats.kpis.revenueMonth"), value: formatPrice(stats.revenueMonth), icon: CalendarDays, tone: "bg-primary/10 text-primary" },
+    ...(showRevenue
+      ? [
+          { label: t("admin:stats.kpis.revenue"), value: formatPrice(stats.revenue), icon: DollarSign, tone: "bg-primary/10 text-primary" },
+          { label: t("admin:stats.kpis.revenueDay"), value: formatPrice(stats.revenueDay), icon: CalendarDays, tone: "bg-primary/10 text-primary" },
+          { label: t("admin:stats.kpis.revenueMonth"), value: formatPrice(stats.revenueMonth), icon: CalendarDays, tone: "bg-primary/10 text-primary" },
+          { label: t("admin:stats.kpis.revenueYear"), value: formatPrice(stats.revenueYear), icon: TrendingUp, tone: "bg-primary/10 text-primary" },
+        ]
+      : []),
     { label: t("admin:stats.kpis.lowStock"), value: stats.lowStock.length, icon: AlertTriangle, tone: "bg-amber-500/10 text-amber-600" },
   ];
 
@@ -132,6 +142,7 @@ export function StatsDashboard() {
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
+        {showRevenue && (
         <Card>
           <CardHeader>
             <CardTitle className="text-base">{t("admin:stats.charts.salesEvolutionTitle")}</CardTitle>
@@ -149,6 +160,7 @@ export function StatsDashboard() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+        )}
 
         <Card>
           <CardHeader>
