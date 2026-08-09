@@ -47,7 +47,6 @@ function AdminPage() {
   const meq = useQuery(currentAdminQuery);
   const me = meq.data;
   const isLoading = meq.isFetching && !me;
-  if (typeof window !== "undefined") (window as unknown as Record<string, unknown>)["__meq"] = { s: meq.status, f: meq.fetchStatus, e: String(meq.error ?? "") };
 
   useEffect(() => {
     if (!isLoading && me === null) nav({ to: "/auth" });
