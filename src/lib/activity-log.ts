@@ -51,7 +51,7 @@ export async function ensureProfile(userId: string, email: string): Promise<stri
     return data.username;
   }
   const username = (email.split("@")[0] || "admin").trim();
-  await supabase.from("profiles").insert({ id: userId, username });
+  await supabase.from("profiles").insert({ id: userId, username, email });
   cachedUsername = username;
   return username;
 }

@@ -56,6 +56,27 @@ export type Database = {
         }
         Relationships: []
       }
+      app_settings: {
+        Row: {
+          created_at: string
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -243,23 +264,35 @@ export type Database = {
       }
       profiles: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           created_at: string
+          email: string | null
           full_name: string | null
           id: string
+          status: Database["public"]["Enums"]["admin_status"]
           updated_at: string
           username: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id: string
+          status?: Database["public"]["Enums"]["admin_status"]
           updated_at?: string
           username: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id?: string
+          status?: Database["public"]["Enums"]["admin_status"]
           updated_at?: string
           username?: string
         }
@@ -369,6 +402,33 @@ export type Database = {
             }
             Returns: undefined
           }
+      admin_list_accounts: {
+        Args: never
+        Returns: {
+          approved_at: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          status: Database["public"]["Enums"]["admin_status"]
+          username: string
+        }[]
+      }
+      admin_set_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
+      admin_set_status: {
+        Args: {
+          _status: Database["public"]["Enums"]["admin_status"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
       cancel_order: { Args: { _order_id: string }; Returns: undefined }
       confirm_order: { Args: { _order_id: string }; Returns: undefined }
       current_admin_username: { Args: never; Returns: string }
@@ -379,6 +439,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_active_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       set_stock_quantity: {
         Args: {
           _comment?: string
@@ -391,7 +453,8 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      admin_status: "pending" | "active" | "disabled"
+      app_role: "admin" | "user" | "super_admin"
       order_status: "pending" | "confirmed" | "cancelled"
       stock_movement_type: "entry" | "sale" | "manual" | "inventory" | "return"
     }
@@ -521,7 +584,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      admin_status: ["pending", "active", "disabled"],
+      app_role: ["admin", "user", "super_admin"],
       order_status: ["pending", "confirmed", "cancelled"],
       stock_movement_type: ["entry", "sale", "manual", "inventory", "return"],
     },

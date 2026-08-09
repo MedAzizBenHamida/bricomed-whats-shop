@@ -51,7 +51,7 @@ function AuthPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Compte créé. Vous pouvez vous connecter.");
+    toast.success("Compte créé. Il doit être approuvé par un super administrateur avant l'accès.");
   };
 
   return (
@@ -95,7 +95,7 @@ function AuthPage() {
               </div>
               <Button className="w-full" disabled={loading}>Créer le compte</Button>
               <p className="text-xs text-muted-foreground">
-                Après création, demandez à un administrateur existant de vous ajouter le rôle admin.
+                Votre compte sera créé avec le statut « En attente d'approbation ». Un super administrateur doit le valider avant que vous puissiez accéder au tableau de bord.
               </p>
             </form>
           </TabsContent>

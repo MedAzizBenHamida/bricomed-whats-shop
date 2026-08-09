@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package, ShoppingCart, Boxes, UserCog, ScrollText, ArrowLeftRight } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Star, ShieldAlert, LayoutDashboard, Package, ShoppingCart, Boxes, UserCog, ScrollText, ArrowLeftRight, Users, Settings, Hourglass, Crown } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { StatsDashboard } from "@/components/admin/StatsDashboard";
@@ -25,8 +25,10 @@ import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { categoriesQuery, productsQuery, ordersQuery, type Product } from "@/lib/queries";
 import { formatPrice } from "@/lib/constants";
-import type { User } from "@supabase/supabase-js";
 import { useTranslation } from "react-i18next";
+import { currentAdminQuery, adminAccountsQuery } from "@/lib/roles";
+import { AdminUsersTab } from "@/components/admin/AdminUsersTab";
+import { SettingsTab } from "@/components/admin/SettingsTab";
 
 
 export const Route = createFileRoute("/admin")({
@@ -42,35 +44,30 @@ export const Route = createFileRoute("/admin")({
 function AdminPage() {
   const { t } = useTranslation(["admin", "common"]);
   const nav = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const meq = useQuery(currentAdminQuery);
+  const me = meq.data;
+  const isLoading = meq.isFetching && !me;
+  if (typeof window !== "undefined") (window as unknown as Record<string, unknown>)["__meq"] = { s: meq.status, f: meq.fetchStatus, e: String(meq.error ?? "") };
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) return nav({ to: "/auth" });
-      setUser(data.user);
-      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
-      setIsAdmin(!!roles?.some((r) => (r as { role: string }).role === "admin"));
-    })();
-  }, [nav]);
+    if (!isLoading && me === null) nav({ to: "/auth" });
+  }, [isLoading, me, nav]);
 
-  if (!user || isAdmin === null) {
+  if (isLoading || !me) {
     return <div className="mx-auto max-w-6xl px-4 py-16 text-center text-muted-foreground">{t("admin:loading")}</div>;
   }
 
-  if (!isAdmin) {
+  if (!me.isAdmin) {
+    const key = me.status === "pending" ? "pending" : me.status === "disabled" ? "disabled" : "restricted";
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center">
-        <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
-          <ShieldAlert className="h-6 w-6" />
+        <span className={`mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl ${key === "pending" ? "bg-amber-100 text-amber-700" : "bg-destructive/10 text-destructive"}`}>
+          {key === "pending" ? <Hourglass className="h-6 w-6" /> : <ShieldAlert className="h-6 w-6" />}
         </span>
-        <h1 className="mt-4 font-display text-2xl font-bold">{t("admin:access.restrictedTitle")}</h1>
-        <p className="mt-2 text-muted-foreground">
-          {t("admin:access.restrictedText", { email: user.email })}
-        </p>
+        <h1 className="mt-4 font-display text-2xl font-bold">{t(`admin:access.${key}Title`)}</h1>
+        <p className="mt-2 text-muted-foreground">{t(`admin:access.${key}Text`, { email: me.email })}</p>
         <p className="mt-4 text-xs text-muted-foreground">
-          {t("admin:access.idToShare")} <code className="rounded bg-secondary px-2 py-1">{user.id}</code>
+          {t("admin:access.idToShare")} <code className="rounded bg-secondary px-2 py-1">{me.userId}</code>
         </p>
         <Button variant="outline" className="mt-6" onClick={async () => { await supabase.auth.signOut(); nav({ to: "/auth" }); }}>
           <LogOut className="h-4 w-4" /> {t("common:actions.logout")}
@@ -79,10 +76,10 @@ function AdminPage() {
     );
   }
 
-  return <AdminDashboard email={user.email ?? ""} userId={user.id} />;
+  return <AdminDashboard email={me.email} userId={me.userId} isSuperAdmin={me.isSuperAdmin} />;
 }
 
-function AdminDashboard({ email, userId }: { email: string; userId: string }) {
+function AdminDashboard({ email, userId, isSuperAdmin }: { email: string; userId: string; isSuperAdmin: boolean }) {
   const { t } = useTranslation(["admin", "common"]);
   const nav = useNavigate();
   const qc = useQueryClient();
@@ -105,6 +102,8 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
   }, [userId, email]);
 
   const pendingCount = orders.filter((o) => o.status === "pending").length;
+  const { data: accounts = [] } = useQuery({ ...adminAccountsQuery, enabled: isSuperAdmin });
+  const pendingAccounts = (accounts as { status: string }[]).filter((a) => a.status === "pending").length;
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["products"] });
@@ -157,7 +156,13 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
     <div className="mx-auto max-w-7xl px-4 py-10">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold">{t("admin:header.title")}</h1>
+          <h1 className="flex items-center gap-3 font-display text-3xl font-bold">
+            {t("admin:header.title")}
+            <Badge variant={isSuperAdmin ? "default" : "secondary"} className="gap-1 text-xs">
+              {isSuperAdmin && <Crown className="h-3 w-3" />}
+              {t(`admin:users.roles.${isSuperAdmin ? "super_admin" : "admin"}`)}
+            </Badge>
+          </h1>
           <p className="text-sm text-muted-foreground">{t("admin:header.connectedAs", { email })}</p>
         </div>
         <div className="flex gap-2">
@@ -189,17 +194,26 @@ function AdminDashboard({ email, userId }: { email: string; userId: string }) {
             {pendingCount > 0 && <Badge variant="secondary" className="ms-1">{pendingCount}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="stock" className="gap-2"><Boxes className="h-4 w-4" /> {t("admin:tabs.stock")}</TabsTrigger>
-          <TabsTrigger value="movements" className="gap-2"><ArrowLeftRight className="h-4 w-4" /> {t("admin:tabs.movements")}</TabsTrigger>
           <TabsTrigger value="products" className="gap-2"><Package className="h-4 w-4" /> {t("admin:tabs.products")}</TabsTrigger>
-          <TabsTrigger value="logs" className="gap-2"><ScrollText className="h-4 w-4" /> {t("admin:tabs.logs")}</TabsTrigger>
+          {isSuperAdmin && <TabsTrigger value="movements" className="gap-2"><ArrowLeftRight className="h-4 w-4" /> {t("admin:tabs.movements")}</TabsTrigger>}
+          {isSuperAdmin && <TabsTrigger value="logs" className="gap-2"><ScrollText className="h-4 w-4" /> {t("admin:tabs.logs")}</TabsTrigger>}
+          {isSuperAdmin && (
+            <TabsTrigger value="users" className="gap-2">
+              <Users className="h-4 w-4" /> {t("admin:tabs.users")}
+              {pendingAccounts > 0 && <Badge variant="destructive" className="ms-1">{pendingAccounts}</Badge>}
+            </TabsTrigger>
+          )}
+          {isSuperAdmin && <TabsTrigger value="settings" className="gap-2"><Settings className="h-4 w-4" /> {t("admin:tabs.settings")}</TabsTrigger>}
           <TabsTrigger value="profile" className="gap-2"><UserCog className="h-4 w-4" /> {t("admin:tabs.profile")}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="stats"><StatsDashboard /></TabsContent>
+        <TabsContent value="stats"><StatsDashboard showRevenue={isSuperAdmin} /></TabsContent>
         <TabsContent value="orders"><OrdersTab /></TabsContent>
         <TabsContent value="stock"><StockTab /></TabsContent>
-        <TabsContent value="movements"><StockMovementsTab /></TabsContent>
-        <TabsContent value="logs"><ActivityLogTab /></TabsContent>
+        {isSuperAdmin && <TabsContent value="movements"><StockMovementsTab /></TabsContent>}
+        {isSuperAdmin && <TabsContent value="logs"><ActivityLogTab /></TabsContent>}
+        {isSuperAdmin && <TabsContent value="users"><AdminUsersTab currentUserId={userId} /></TabsContent>}
+        {isSuperAdmin && <TabsContent value="settings"><SettingsTab /></TabsContent>}
         <TabsContent value="profile"><ProfileTab email={email} userId={userId} /></TabsContent>
 
 
