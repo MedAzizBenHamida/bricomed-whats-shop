@@ -93,10 +93,6 @@ function AdminDashboard({ email, userId, isSuperAdmin }: { email: string; userId
     (async () => {
       const name = await ensureProfile(userId, email);
       setUsername(name);
-      const key = `bricomed-login-logged-${userId}`;
-      if (sessionStorage.getItem(key)) return;
-      sessionStorage.setItem(key, "1");
-      logActivity({ action: "Connexion", entityType: "Administration", entityName: name, entityId: userId });
     })();
   }, [userId, email]);
 
@@ -111,11 +107,10 @@ function AdminDashboard({ email, userId, isSuperAdmin }: { email: string; userId
   };
 
   const signOut = async () => {
-    await logActivity({ action: "Déconnexion", entityType: "Administration", entityName: username, entityId: userId });
-    sessionStorage.removeItem(`bricomed-login-logged-${userId}`);
     await supabase.auth.signOut();
     nav({ to: "/auth" });
   };
+
 
 
   const toggleFeatured = async (p: Product) => {
