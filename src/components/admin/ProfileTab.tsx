@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Mail, KeyRound, User as UserIcon } from "lucide-react";
-import { ensureProfile, logActivity, setCachedUsername } from "@/lib/activity-log";
+import { ensureProfile, setCachedUsername } from "@/lib/activity-log";
 import { useTranslation } from "react-i18next";
 
 export function ProfileTab({ email, userId }: { email: string; userId: string }) {
@@ -37,14 +37,6 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
     setSavingName(false);
     if (error) return toast.error(error.message);
     setCachedUsername(value);
-    await logActivity({
-      action: "Modification profil",
-      entityType: "Administration",
-      entityName: value,
-      entityId: userId,
-      oldValue: `Nom d'utilisateur: ${initialUsername}`,
-      newValue: `Nom d'utilisateur: ${value}`,
-    });
     setInitialUsername(value);
     toast.success(t("admin:profile.toasts.usernameUpdated"));
   };
@@ -56,14 +48,6 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
     const { error } = await supabase.auth.updateUser({ email: newEmail.trim() });
     setSavingEmail(false);
     if (error) return toast.error(error.message);
-    await logActivity({
-      action: "Modification profil",
-      entityType: "Administration",
-      entityName: username || email,
-      entityId: userId,
-      oldValue: `Email: ${email}`,
-      newValue: `Email: ${newEmail.trim()} (en attente de confirmation)`,
-    });
     toast.success(t("admin:profile.toasts.emailSent"));
   };
 
@@ -77,12 +61,6 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
     if (error) return toast.error(error.message);
     setPwd("");
     setPwd2("");
-    await logActivity({
-      action: "Changement de mot de passe",
-      entityType: "Administration",
-      entityName: username || email,
-      entityId: userId,
-    });
     toast.success(t("admin:profile.toasts.passwordUpdated"));
   };
 

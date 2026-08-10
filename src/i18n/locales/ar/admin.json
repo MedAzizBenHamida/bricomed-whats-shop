@@ -268,15 +268,20 @@
       "exportDate": "تم التصدير في {{date}} — {{count}} إدخال(ات)"
     },
     "actionLabels": {
-      "Connexion": "تسجيل الدخول",
-      "Déconnexion": "تسجيل الخروج",
       "Désactivation vedette": "إلغاء التمييز",
       "Activation vedette": "تفعيل التمييز",
       "Suppression produit": "حذف منتج",
       "Modification produit": "تعديل منتج",
       "Ajout produit": "إضافة منتج",
-      "Modification profil": "تعديل الملف الشخصي",
-      "Changement de mot de passe": "تغيير كلمة المرور"
+      "Entrée de stock": "إدخال مخزون",
+      "Sortie de stock": "إخراج مخزون",
+      "Confirmation commande": "تأكيد طلبية",
+      "Annulation commande": "إلغاء طلبية",
+      "Changement de rôle": "تغيير الدور",
+      "Changement de statut": "تغيير الحالة",
+      "Création d'un compte administrateur": "إنشاء حساب مسؤول",
+      "Modification des paramètres boutique": "تعديل إعدادات المتجر",
+      "Modification des paramètres de stock": "تعديل إعدادات المخزون"
     }
   },
   "movements": {
