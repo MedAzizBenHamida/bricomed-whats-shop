@@ -37,14 +37,6 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
     setSavingName(false);
     if (error) return toast.error(error.message);
     setCachedUsername(value);
-    await logActivity({
-      action: "Modification profil",
-      entityType: "Administration",
-      entityName: value,
-      entityId: userId,
-      oldValue: `Nom d'utilisateur: ${initialUsername}`,
-      newValue: `Nom d'utilisateur: ${value}`,
-    });
     setInitialUsername(value);
     toast.success(t("admin:profile.toasts.usernameUpdated"));
   };
