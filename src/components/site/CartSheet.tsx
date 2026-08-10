@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  const { t } = useTranslation("site");
   const { items, setQty, remove, clear, total } = useCart();
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -25,14 +27,15 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
 
   const buildMessage = (orderId?: string) => {
     const lines = items.map((i) => `• ${i.name} x${i.qty} : ${formatPrice(i.qty * i.price)}`).join("\n");
-    const ref = orderId ? `\nRéf. commande : ${orderId.slice(0, 8).toUpperCase()}\n` : "";
-    const infos = `\nNom : ${name}\nTéléphone : ${fullPhone}${governorate ? `\nGouvernorat : ${governorate}` : ""}${address ? `\nAdresse : ${address}` : ""}${notes ? `\nNotes : ${notes}` : ""}`;
-    return `Bonjour ${SHOP.name},\n\nJe souhaite commander :\n\n${lines}\n\nTotal : ${formatPrice(total)}${ref}${infos}\n\nMerci de confirmer la disponibilité.`;
+    const ref = orderId ? `\n${t("cart.msg.ref")} : ${orderId.slice(0, 8).toUpperCase()}\n` : "";
+    const infos = `\n${t("cart.msg.name")} : ${name}\n${t("cart.msg.phone")} : ${fullPhone}${governorate ? `\n${t("cart.msg.governorate")} : ${governorate}` : ""}${address ? `\n${t("cart.msg.address")} : ${address}` : ""}${notes ? `\n${t("cart.msg.notes")} : ${notes}` : ""}`;
+    return `${t("cart.msg.hello", { shop: SHOP.name })}\n\n${t("cart.msg.intro")}\n\n${lines}\n\n${t("cart.msg.total")} : ${formatPrice(total)}${ref}${infos}\n\n${t("cart.msg.outro")}`;
   };
+
 
   const submit = async () => {
     if (!name.trim() || !phoneNumber.trim() || !governorate || !address.trim()) {
-      toast.error("Nom, téléphone, gouvernorat et adresse requis");
+      toast.error(t("cart.errRequired"));
       return;
     }
 
@@ -43,7 +46,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     if (whatsappWindow) {
       whatsappWindow.opener = null;
     } else {
-      toast.error("Le navigateur a bloqué l'ouverture de WhatsApp. Autorisez les popups pour ce site.");
+      toast.error(t("cart.errPopup"));
       return;
     }
 
@@ -63,7 +66,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       .single();
     if (error || !order) {
       setSending(false);
-      toast.error("WhatsApp est ouvert, mais la commande n'a pas été enregistrée");
+      toast.error(t("cart.errSaved"));
       return;
     }
     const payload = items.map((i) => ({
@@ -74,7 +77,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       quantity: i.qty,
     }));
     await supabase.from("order_items").insert(payload);
-    toast.success("Commande envoyée sur WhatsApp");
+    toast.success(t("cart.success"));
     clear();
     setName("");
     setPhoneNumber("");
@@ -90,7 +93,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
         <SheetHeader className="border-b p-6">
           <SheetTitle className="flex items-center gap-2">
-            <ShoppingBag className="h-5 w-5" /> Mon panier
+            <ShoppingBag className="h-5 w-5" /> {t("cart.title")}
           </SheetTitle>
         </SheetHeader>
 
@@ -98,7 +101,8 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
           {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center py-16 text-center">
               <ShoppingBag className="mb-4 h-12 w-12 text-muted-foreground/50" />
-              <p className="text-muted-foreground">Votre panier est vide</p>
+              <p className="text-muted-foreground">{t("cart.empty")}</p>
+              <p className="mt-1 text-sm text-muted-foreground/70">{t("cart.emptyDetail")}</p>
             </div>
           ) : (
             <>
@@ -128,11 +132,11 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
 
               <div className="mt-6 space-y-3 border-t pt-4">
                 <div>
-                  <Label>Votre nom</Label>
-                  <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nom complet" />
+                  <Label>{t("cart.yourName")}</Label>
+                  <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("cart.fullName")} />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Téléphone *</Label>
+                  <Label htmlFor="phone">{t("cart.phone")}</Label>
                   <div className="flex items-center overflow-hidden rounded-md border focus-within:ring-1 focus-within:ring-ring">
                     <span className="border-r bg-muted px-3 py-2 text-sm font-medium text-muted-foreground">+216</span>
                     <Input
@@ -140,16 +144,16 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                       type="tel"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                      placeholder="00 000 000"
+                      placeholder={t("cart.phonePlaceholder")}
                       className="border-0 focus-visible:ring-0"
                     />
                   </div>
                 </div>
                 <div>
-                  <Label>Gouvernorat *</Label>
+                  <Label>{t("cart.governorate")}</Label>
                   <Select value={governorate} onValueChange={setGovernorate}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Choisir un gouvernorat" />
+                      <SelectValue placeholder={t("cart.chooseGovernorate")} />
                     </SelectTrigger>
                     <SelectContent>
                       {GOVERNORATES.map((g) => (
@@ -159,11 +163,11 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="address">Adresse détaillée *</Label>
-                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rue, quartier, numéro" />
+                  <Label htmlFor="address">{t("cart.address")}</Label>
+                  <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder={t("cart.addressPlaceholder")} />
                 </div>
                 <div>
-                  <Label>Notes (optionnel)</Label>
+                  <Label>{t("cart.notes")}</Label>
                   <Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
                 </div>
               </div>
@@ -174,13 +178,13 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
         {items.length > 0 && (
           <SheetFooter className="flex-col gap-3 border-t p-6 sm:flex-col sm:space-x-0">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Total</span>
+              <span className="text-sm text-muted-foreground">{t("cart.total")}</span>
               <span className="font-display text-2xl font-bold">{formatPrice(total)}</span>
             </div>
             <Button size="lg" className="w-full" disabled={sending} onClick={submit}>
-              <MessageCircle className="h-5 w-5" /> {sending ? "Envoi…" : "Commander via WhatsApp"}
+              <MessageCircle className="h-5 w-5" /> {sending ? t("cart.sending") : t("cart.orderWhatsapp")}
             </Button>
-            <Button variant="ghost" size="sm" onClick={clear}>Vider le panier</Button>
+            <Button variant="ghost" size="sm" onClick={clear}>{t("cart.clear")}</Button>
           </SheetFooter>
         )}
       </SheetContent>

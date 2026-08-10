@@ -88,7 +88,11 @@
       "address": "Adresse",
       "notes": "Notes",
       "outro": "Merci de confirmer la disponibilité."
-    }
+    },
+    "emptyDetail": "Aucun produit dans votre panier",
+    "total": "Total",
+    "quantity": "Quantité",
+    "remove": "Supprimer"
   },
   "about": {
     "title": "À propos de {{shop}}",
