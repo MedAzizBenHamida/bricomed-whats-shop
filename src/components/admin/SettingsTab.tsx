@@ -34,23 +34,60 @@ export function SettingsTab() {
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
+    const prevShop = { ...emptyShop, ...((settings?.["shop"] ?? {}) as Partial<ShopSettings>) };
+    const prevHours = { ...emptyShop.hours, ...(prevShop.hours ?? {}) };
+    const prevThreshold = Number(
+      (settings?.["stock"] as { low_stock_threshold?: number } | undefined)?.low_stock_threshold ?? 5,
+    );
+    const nextThreshold = Math.max(0, Number(threshold));
+
+    const shopFields: { label: string; old: string; new: string }[] = [
+      { label: "Nom", old: prevShop.name ?? "", new: shop.name },
+      { label: "Téléphone", old: prevShop.phone ?? "", new: shop.phone },
+      { label: "WhatsApp", old: prevShop.whatsapp ?? "", new: shop.whatsapp },
+      { label: "Email", old: prevShop.email ?? "", new: shop.email },
+      { label: "Adresse", old: prevShop.address ?? "", new: shop.address },
+      { label: "Horaires lun-ven", old: prevHours.monfri, new: shop.hours.monfri },
+      { label: "Horaires samedi", old: prevHours.sat, new: shop.hours.sat },
+      { label: "Horaires dimanche", old: prevHours.sun, new: shop.hours.sun },
+    ].filter((f) => f.old !== f.new);
+    const thresholdChanged = prevThreshold !== nextThreshold;
+
+    if (!shopFields.length && !thresholdChanged) {
+      return toast.info(t("admin:settings.saved"));
+    }
+
     setSaving(true);
     const { error } = await supabase.from("app_settings").upsert([
       { key: "shop", value: JSON.parse(JSON.stringify(shop)) },
-      { key: "stock", value: { low_stock_threshold: Math.max(0, Number(threshold)) } },
+      { key: "stock", value: { low_stock_threshold: nextThreshold } },
     ]);
     setSaving(false);
     if (error) return toast.error(error.message);
-    await logActivity({
-      action: "Modification des paramètres",
-      entityType: "Paramètres",
-      entityName: shop.name,
-      newValue: `${shop.phone} — ${shop.email} — seuil ${threshold}`,
-    });
+
+    if (shopFields.length) {
+      await logActivity({
+        action: "Modification des paramètres boutique",
+        entityType: "Paramètres",
+        entityName: shop.name,
+        oldValue: shopFields.map((f) => `${f.label}: ${f.old || "—"}`).join(" | "),
+        newValue: shopFields.map((f) => `${f.label}: ${f.new || "—"}`).join(" | "),
+      });
+    }
+    if (thresholdChanged) {
+      await logActivity({
+        action: "Modification des paramètres de stock",
+        entityType: "Paramètres",
+        entityName: "Seuil d'alerte de stock",
+        oldValue: String(prevThreshold),
+        newValue: String(nextThreshold),
+      });
+    }
     qc.invalidateQueries({ queryKey: ["app_settings"] });
     qc.invalidateQueries({ queryKey: ["activity_logs"] });
     toast.success(t("admin:settings.saved"));
   };
+
 
   return (
     <form onSubmit={save} className="space-y-6">
