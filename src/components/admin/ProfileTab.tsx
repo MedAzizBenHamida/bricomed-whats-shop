@@ -77,12 +77,6 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
     if (error) return toast.error(error.message);
     setPwd("");
     setPwd2("");
-    await logActivity({
-      action: "Changement de mot de passe",
-      entityType: "Administration",
-      entityName: username || email,
-      entityId: userId,
-    });
     toast.success(t("admin:profile.toasts.passwordUpdated"));
   };
 
