@@ -56,14 +56,6 @@ export function ProfileTab({ email, userId }: { email: string; userId: string })
     const { error } = await supabase.auth.updateUser({ email: newEmail.trim() });
     setSavingEmail(false);
     if (error) return toast.error(error.message);
-    await logActivity({
-      action: "Modification profil",
-      entityType: "Administration",
-      entityName: username || email,
-      entityId: userId,
-      oldValue: `Email: ${email}`,
-      newValue: `Email: ${newEmail.trim()} (en attente de confirmation)`,
-    });
     toast.success(t("admin:profile.toasts.emailSent"));
   };
 
