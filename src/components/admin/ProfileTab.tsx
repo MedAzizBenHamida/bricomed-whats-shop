@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Mail, KeyRound, User as UserIcon } from "lucide-react";
-import { ensureProfile, logActivity, setCachedUsername } from "@/lib/activity-log";
+import { ensureProfile, setCachedUsername } from "@/lib/activity-log";
 import { useTranslation } from "react-i18next";
 
 export function ProfileTab({ email, userId }: { email: string; userId: string }) {
