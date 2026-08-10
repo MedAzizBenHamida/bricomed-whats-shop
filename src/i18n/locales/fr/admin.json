@@ -268,15 +268,20 @@
       "exportDate": "Export du {{date}} — {{count}} entrée(s)"
     },
     "actionLabels": {
-      "Connexion": "Connexion",
-      "Déconnexion": "Déconnexion",
       "Désactivation vedette": "Désactivation vedette",
       "Activation vedette": "Activation vedette",
       "Suppression produit": "Suppression produit",
       "Modification produit": "Modification produit",
       "Ajout produit": "Ajout produit",
-      "Modification profil": "Modification profil",
-      "Changement de mot de passe": "Changement de mot de passe"
+      "Entrée de stock": "Entrée de stock",
+      "Sortie de stock": "Sortie de stock",
+      "Confirmation commande": "Confirmation commande",
+      "Annulation commande": "Annulation commande",
+      "Changement de rôle": "Changement de rôle",
+      "Changement de statut": "Changement de statut",
+      "Création d'un compte administrateur": "Création d'un compte administrateur",
+      "Modification des paramètres boutique": "Modification des paramètres boutique",
+      "Modification des paramètres de stock": "Modification des paramètres de stock"
     }
   },
   "movements": {
