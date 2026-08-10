@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  const { t } = useTranslation("site");
   const { items, setQty, remove, clear, total } = useCart();
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -25,10 +27,11 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
 
   const buildMessage = (orderId?: string) => {
     const lines = items.map((i) => `• ${i.name} x${i.qty} : ${formatPrice(i.qty * i.price)}`).join("\n");
-    const ref = orderId ? `\nRéf. commande : ${orderId.slice(0, 8).toUpperCase()}\n` : "";
-    const infos = `\nNom : ${name}\nTéléphone : ${fullPhone}${governorate ? `\nGouvernorat : ${governorate}` : ""}${address ? `\nAdresse : ${address}` : ""}${notes ? `\nNotes : ${notes}` : ""}`;
-    return `Bonjour ${SHOP.name},\n\nJe souhaite commander :\n\n${lines}\n\nTotal : ${formatPrice(total)}${ref}${infos}\n\nMerci de confirmer la disponibilité.`;
+    const ref = orderId ? `\n${t("cart.msg.ref")} : ${orderId.slice(0, 8).toUpperCase()}\n` : "";
+    const infos = `\n${t("cart.msg.name")} : ${name}\n${t("cart.msg.phone")} : ${fullPhone}${governorate ? `\n${t("cart.msg.governorate")} : ${governorate}` : ""}${address ? `\n${t("cart.msg.address")} : ${address}` : ""}${notes ? `\n${t("cart.msg.notes")} : ${notes}` : ""}`;
+    return `${t("cart.msg.hello", { shop: SHOP.name })}\n\n${t("cart.msg.intro")}\n\n${lines}\n\n${t("cart.msg.total")} : ${formatPrice(total)}${ref}${infos}\n\n${t("cart.msg.outro")}`;
   };
+
 
   const submit = async () => {
     if (!name.trim() || !phoneNumber.trim() || !governorate || !address.trim()) {
