@@ -79,6 +79,16 @@
       "images": "الصور",
       "features": "المواصفات",
       "featured": "مميز"
+    },
+    "images": {
+      "uploadTitle": "تحميل صورة من الحاسوب",
+      "urlTitle": "استعمال رابط صورة",
+      "chooseFile": "اختيار ملف",
+      "addUrl": "إضافة",
+      "hint": "JPG أو JPEG أو PNG أو WEBP — 5 ميغابايت كحد أقصى",
+      "errorType": "صيغة غير صالحة: استعمل JPG أو JPEG أو PNG أو WEBP.",
+      "errorSize": "حجم الملف كبير جدًا: 5 ميغابايت كحد أقصى.",
+      "uploaded": "تم تحميل الصورة بنجاح"
     }
   },
   "stats": {
