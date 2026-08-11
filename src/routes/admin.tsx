@@ -430,10 +430,11 @@ function ProductDialog({ product, categories, username, onDone }: { product: Pro
           <Label>{t("admin:products.dialog.description")}</Label>
           <Textarea required rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
         </div>
-        <div>
-          <Label>{t("admin:products.dialog.images")}</Label>
-          <Textarea rows={3} value={form.images} onChange={(e) => setForm({ ...form, images: e.target.value })} />
-        </div>
+        <ProductImagesInput
+          value={form.images.split("\n").map((s) => s.trim()).filter(Boolean)}
+          onChange={(imgs) => setForm({ ...form, images: imgs.join("\n") })}
+        />
+
         <div>
           <Label>{t("admin:products.dialog.features")}</Label>
           <Textarea rows={3} value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} />
