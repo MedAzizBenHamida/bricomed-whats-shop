@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, ShoppingCart, Wrench } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -20,6 +20,8 @@ export function Header() {
   const { count } = useCart();
   const [openCart, setOpenCart] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdminArea = pathname.startsWith("/admin");
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
@@ -47,20 +49,22 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher className="hidden sm:inline-flex" />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative"
-            onClick={() => setOpenCart(true)}
-            aria-label={t("labels.cart")}
-          >
-            <ShoppingCart className="h-5 w-5" />
-            {count > 0 && (
-              <span className="absolute -end-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-semibold text-primary-foreground">
-                {count}
-              </span>
-            )}
-          </Button>
+          {!isAdminArea && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              onClick={() => setOpenCart(true)}
+              aria-label={t("labels.cart")}
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {count > 0 && (
+                <span className="absolute -end-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-semibold text-primary-foreground">
+                  {count}
+                </span>
+              )}
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -92,7 +96,7 @@ export function Header() {
         </div>
       )}
 
-      <CartSheet open={openCart} onOpenChange={setOpenCart} />
+      {!isAdminArea && <CartSheet open={openCart} onOpenChange={setOpenCart} />}
     </header>
   );
 }

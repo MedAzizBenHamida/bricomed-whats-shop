@@ -35,7 +35,7 @@ export function StockTab() {
       _change: change,
       _reason,
       _type,
-      _comment: null,
+      _comment: undefined,
     });
     if (error) return toast.error(error.message);
     toast.success(t("admin:stock.toasts.updated", { sign: change > 0 ? "+" : "", change }));
