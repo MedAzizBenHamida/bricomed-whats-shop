@@ -29,8 +29,6 @@ import { useTranslation } from "react-i18next";
 import { currentAdminQuery, adminAccountsQuery } from "@/lib/roles";
 import { AdminUsersTab } from "@/components/admin/AdminUsersTab";
 import { SettingsTab } from "@/components/admin/SettingsTab";
-import { ProductImagesInput, removeStorageImages } from "@/components/admin/ProductImagesInput";
-
 
 
 export const Route = createFileRoute("/admin")({
@@ -341,12 +339,6 @@ function ProductDialog({ product, categories, username, onDone }: { product: Pro
     setSaving(false);
     if (res.error) return toast.error(res.error.message);
 
-    if (product) {
-      const removed = (product.images ?? []).filter((u) => !payload.images.includes(u));
-      if (removed.length) await removeStorageImages(removed);
-    }
-
-
     const labels: Record<string, string> = {
       name: t("admin:products.fields.name"),
       price: t("admin:products.fields.price"),
@@ -438,11 +430,10 @@ function ProductDialog({ product, categories, username, onDone }: { product: Pro
           <Label>{t("admin:products.dialog.description")}</Label>
           <Textarea required rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
         </div>
-        <ProductImagesInput
-          value={form.images.split("\n").map((s) => s.trim()).filter(Boolean)}
-          onChange={(imgs) => setForm({ ...form, images: imgs.join("\n") })}
-        />
-
+        <div>
+          <Label>{t("admin:products.dialog.images")}</Label>
+          <Textarea rows={3} value={form.images} onChange={(e) => setForm({ ...form, images: e.target.value })} />
+        </div>
         <div>
           <Label>{t("admin:products.dialog.features")}</Label>
           <Textarea rows={3} value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} />

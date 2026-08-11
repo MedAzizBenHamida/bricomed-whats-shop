@@ -79,16 +79,6 @@
       "images": "Images",
       "features": "Caractéristiques",
       "featured": "Vedette"
-    },
-    "images": {
-      "uploadTitle": "Télécharger une image depuis l'ordinateur",
-      "urlTitle": "Utiliser une URL d'image",
-      "chooseFile": "Choisir un fichier",
-      "addUrl": "Ajouter",
-      "hint": "JPG, JPEG, PNG ou WEBP — 5 Mo maximum",
-      "errorType": "Format non valide : utilisez JPG, JPEG, PNG ou WEBP.",
-      "errorSize": "Fichier trop volumineux : 5 Mo maximum.",
-      "uploaded": "Image téléchargée avec succès"
     }
   },
   "stats": {
