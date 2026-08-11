@@ -341,6 +341,12 @@ function ProductDialog({ product, categories, username, onDone }: { product: Pro
     setSaving(false);
     if (res.error) return toast.error(res.error.message);
 
+    if (product) {
+      const removed = (product.images ?? []).filter((u) => !payload.images.includes(u));
+      if (removed.length) await removeStorageImages(removed);
+    }
+
+
     const labels: Record<string, string> = {
       name: t("admin:products.fields.name"),
       price: t("admin:products.fields.price"),
