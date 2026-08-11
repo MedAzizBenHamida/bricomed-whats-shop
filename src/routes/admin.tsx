@@ -29,6 +29,8 @@ import { useTranslation } from "react-i18next";
 import { currentAdminQuery, adminAccountsQuery } from "@/lib/roles";
 import { AdminUsersTab } from "@/components/admin/AdminUsersTab";
 import { SettingsTab } from "@/components/admin/SettingsTab";
+import { ProductImagesInput, removeStorageImages } from "@/components/admin/ProductImagesInput";
+
 
 
 export const Route = createFileRoute("/admin")({
