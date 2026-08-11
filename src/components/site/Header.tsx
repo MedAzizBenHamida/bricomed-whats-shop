@@ -96,7 +96,7 @@ export function Header() {
         </div>
       )}
 
-      <CartSheet open={openCart} onOpenChange={setOpenCart} />
+      {!isAdminArea && <CartSheet open={openCart} onOpenChange={setOpenCart} />}
     </header>
   );
 }
