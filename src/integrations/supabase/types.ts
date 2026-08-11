@@ -387,21 +387,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      adjust_stock:
-        | {
-            Args: { _change: number; _product_id: string; _reason: string }
-            Returns: undefined
-          }
-        | {
-            Args: {
-              _change: number
-              _comment?: string
-              _product_id: string
-              _reason: string
-              _type?: string
-            }
-            Returns: undefined
-          }
+      adjust_stock: {
+        Args: {
+          _change: number
+          _comment?: string
+          _product_id: string
+          _reason: string
+          _type?: string
+        }
+        Returns: undefined
+      }
       admin_list_accounts: {
         Args: never
         Returns: {
