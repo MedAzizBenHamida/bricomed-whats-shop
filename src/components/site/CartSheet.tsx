@@ -45,18 +45,20 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       // 1. Supabase/PostgreSQL generates orders.id. 2. The server function retrieves it
       // with .select().single(). 3. The same id is used for every order_item.
       const { orderId } = await createOrder({
-        customer_name: name.trim(),
-        customer_phone: fullPhone,
-        customer_address: address.trim() || null,
-        governorate,
-        notes: notes.trim() || null,
-        total,
-        items: items.map((i) => ({
-          product_id: i.id,
-          product_name: i.name,
-          unit_price: i.price,
-          quantity: i.qty,
-        })),
+        data: {
+          customer_name: name.trim(),
+          customer_phone: fullPhone,
+          customer_address: address.trim() || null,
+          governorate,
+          notes: notes.trim() || null,
+          total,
+          items: items.map((i) => ({
+            product_id: i.id,
+            product_name: i.name,
+            unit_price: i.price,
+            quantity: i.qty,
+          })),
+        },
       });
 
       // 4. Only open WhatsApp after order AND order_items are saved.
