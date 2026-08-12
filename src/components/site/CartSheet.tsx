@@ -39,7 +39,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       return;
     }
 
-    const orderId = globalThis.crypto?.randomUUID?.();
+    const orderId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
     const url = waLink(buildMessage(orderId));
     const whatsappWindow = window.open(url, "_blank");
 
@@ -51,32 +51,35 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
     }
 
     setSending(true);
-    const { data: order, error } = await supabase
-      .from("orders")
-      .insert({
-        ...(orderId ? { id: orderId } : {}),
-        customer_name: name.trim(),
-        customer_phone: fullPhone,
-        customer_address: address.trim() || null,
-        governorate,
-        notes: notes.trim() || null,
-        total,
-      })
-      .select()
-      .single();
-    if (error || !order) {
+    // Note: anonymous clients cannot SELECT orders (RLS), so no .select() here.
+    const { error } = await supabase.from("orders").insert({
+      id: orderId,
+      customer_name: name.trim(),
+      customer_phone: fullPhone,
+      customer_address: address.trim() || null,
+      governorate,
+      notes: notes.trim() || null,
+      total,
+    });
+    if (error) {
       setSending(false);
       toast.error(t("cart.errSaved"));
       return;
     }
     const payload = items.map((i) => ({
-      order_id: order.id,
+      order_id: orderId,
       product_id: i.id,
       product_name: i.name,
       unit_price: i.price,
       quantity: i.qty,
     }));
-    await supabase.from("order_items").insert(payload);
+    const { error: itemsError } = await supabase.from("order_items").insert(payload);
+    if (itemsError) {
+      setSending(false);
+      toast.error(t("cart.errSaved"));
+      return;
+    }
+
     toast.success(t("cart.success"));
     clear();
     setName("");
