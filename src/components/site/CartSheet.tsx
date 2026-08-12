@@ -10,7 +10,7 @@ import { GOVERNORATES } from "@/lib/constants";
 import { Minus, Plus, Trash2, MessageCircle, ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { SHOP, formatPrice, waLink } from "@/lib/constants";
-import { supabase } from "@/integrations/supabase/client";
+import { createOrder } from "@/lib/orders.functions";
 import { toast } from "sonner";
 
 export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
