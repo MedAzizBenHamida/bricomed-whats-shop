@@ -39,56 +39,53 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       return;
     }
 
-    const orderId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
-    const url = waLink(buildMessage(orderId));
-    const whatsappWindow = window.open(url, "_blank");
-
-    if (whatsappWindow) {
-      whatsappWindow.opener = null;
-    } else {
-      toast.error(t("cart.errPopup"));
-      return;
-    }
-
     setSending(true);
-    // Note: anonymous clients cannot SELECT orders (RLS), so no .select() here.
-    const { error } = await supabase.from("orders").insert({
-      id: orderId,
-      customer_name: name.trim(),
-      customer_phone: fullPhone,
-      customer_address: address.trim() || null,
-      governorate,
-      notes: notes.trim() || null,
-      total,
-    });
-    if (error) {
-      setSending(false);
-      toast.error(t("cart.errSaved"));
-      return;
-    }
-    const payload = items.map((i) => ({
-      order_id: orderId,
-      product_id: i.id,
-      product_name: i.name,
-      unit_price: i.price,
-      quantity: i.qty,
-    }));
-    const { error: itemsError } = await supabase.from("order_items").insert(payload);
-    if (itemsError) {
-      setSending(false);
-      toast.error(t("cart.errSaved"));
-      return;
-    }
 
-    toast.success(t("cart.success"));
-    clear();
-    setName("");
-    setPhoneNumber("");
-    setGovernorate("");
-    setAddress("");
-    setNotes("");
-    setSending(false);
-    onOpenChange(false);
+    try {
+      // 1. Supabase/PostgreSQL generates orders.id. 2. The server function retrieves it
+      // with .select().single(). 3. The same id is used for every order_item.
+      const { orderId } = await createOrder({
+        customer_name: name.trim(),
+        customer_phone: fullPhone,
+        customer_address: address.trim() || null,
+        governorate,
+        notes: notes.trim() || null,
+        total,
+        items: items.map((i) => ({
+          product_id: i.id,
+          product_name: i.name,
+          unit_price: i.price,
+          quantity: i.qty,
+        })),
+      });
+
+      // 4. Only open WhatsApp after order AND order_items are saved.
+      const url = waLink(buildMessage(orderId));
+      const whatsappWindow = window.open(url, "_blank");
+
+      if (whatsappWindow) {
+        whatsappWindow.opener = null;
+      } else {
+        toast.error(t("cart.errPopup"));
+        setSending(false);
+        return;
+      }
+
+      toast.success(t("cart.success"));
+      clear();
+      setName("");
+      setPhoneNumber("");
+      setGovernorate("");
+      setAddress("");
+      setNotes("");
+      setSending(false);
+      onOpenChange(false);
+    } catch (error) {
+      // 5. On error: do not open WhatsApp, do not clear the cart, show a clear message.
+      console.error(error);
+      toast.error(t("cart.errSaved"));
+      setSending(false);
+    }
   };
 
   return (
