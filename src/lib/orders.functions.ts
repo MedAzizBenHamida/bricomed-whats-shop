@@ -24,9 +24,12 @@ export const createOrder = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { createClient } = await import("@supabase/supabase-js");
 
-    const url = process.env["SUPABASE_URL"];
+    const url = process.env["SUPABASE_URL"] ?? process.env["VITE_SUPABASE_URL"];
     const serviceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];
-    const publishableKey = process.env["SUPABASE_PUBLISHABLE_KEY"];
+    const publishableKey =
+      process.env["SUPABASE_PUBLISHABLE_KEY"] ??
+      process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ??
+      process.env["SUPABASE_ANON_KEY"];
     const key = serviceKey ?? publishableKey;
 
     if (!url || !key) {
