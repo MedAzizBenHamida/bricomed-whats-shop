@@ -19,7 +19,7 @@ const orderPayloadSchema = z.object({
 });
 
 export const createOrder = createServerFn({ method: "POST" })
-  .inputValidator((input) => orderPayloadSchema.parse(input))
+  .validator(orderPayloadSchema)
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
