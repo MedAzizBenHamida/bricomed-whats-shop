@@ -87,11 +87,19 @@ export function StockMovementsTab() {
   };
 
   const exportExcel = async () => {
-    const XLSX = await import("xlsx");
-    const ws = XLSX.utils.aoa_to_sheet([head, ...rows()]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Mouvements");
-    XLSX.writeFile(wb, `mouvements-stock-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    const ExcelJS = await import("exceljs");
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Mouvements");
+    worksheet.addRow(head);
+    rows().forEach((row) => worksheet.addRow(row));
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `mouvements-stock-${new Date().toISOString().slice(0, 10)}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const reset = () => {
