@@ -78,15 +78,27 @@ export function ActivityLogTab() {
   };
 
   const exportExcel = async () => {
-    const XLSX = await import("xlsx");
-    const ws = XLSX.utils.aoa_to_sheet([
-      [t("admin:logs.table.date"), t("admin:logs.table.admin"), t("admin:logs.table.action"), t("admin:logs.table.element"), t("admin:logs.table.details"), t("admin:logs.table.ip")],
-      ...rows(),
+    const ExcelJS = await import("exceljs");
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Journal");
+    worksheet.addRow([
+      t("admin:logs.table.date"),
+      t("admin:logs.table.admin"),
+      t("admin:logs.table.action"),
+      t("admin:logs.table.element"),
+      t("admin:logs.table.details"),
+      t("admin:logs.table.ip"),
     ]);
-    ws["!cols"] = [{ wch: 18 }, { wch: 16 }, { wch: 26 }, { wch: 32 }, { wch: 48 }, { wch: 16 }];
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Journal");
-    XLSX.writeFile(wb, `journal-activite-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    rows().forEach((row) => worksheet.addRow(row));
+    worksheet.columns = [{ width: 18 }, { width: 16 }, { width: 26 }, { width: 32 }, { width: 48 }, { width: 16 }];
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `journal-activite-${new Date().toISOString().slice(0, 10)}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const reset = () => {
