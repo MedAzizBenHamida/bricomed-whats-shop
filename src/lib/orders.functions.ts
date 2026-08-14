@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { Database } from "@/integrations/supabase/types";
 
 const orderItemSchema = z.object({
   product_id: z.string(),
@@ -22,7 +23,6 @@ export const createOrder = createServerFn({ method: "POST" })
   .validator(orderPayloadSchema)
   .handler(async ({ data }) => {
     const { createClient } = await import("@supabase/supabase-js");
-    type DatabaseTypes = typeof import("@/integrations/supabase/types");
 
     const url = process.env["SUPABASE_URL"];
     const serviceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];
@@ -33,7 +33,7 @@ export const createOrder = createServerFn({ method: "POST" })
       throw new Error("Configuration Supabase manquante côté serveur (SUPABASE_URL / clé).");
     }
 
-    const client = createClient<DatabaseTypes["Database"]>(url, key, {
+    const client = createClient<Database>(url, key, {
       auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
       global: {
         fetch: (input, init) => {
