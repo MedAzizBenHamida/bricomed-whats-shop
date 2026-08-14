@@ -1,15 +1,12 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { Upload, Link2, Trash2, Loader2 } from "lucide-react";
+import { Link2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 
 const BUCKET = "product-images";
-const ACCEPTED = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-const MAX_SIZE = 5 * 1024 * 1024;
 const TEN_YEARS = 60 * 60 * 24 * 365 * 10;
 
 /** Extract the storage path from a signed/public URL of our bucket, else null. */
@@ -27,44 +24,7 @@ export async function removeStorageImages(urls: string[]) {
 
 export function ProductImagesInput({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
   const { t } = useTranslation(["admin", "common"]);
-  const [uploading, setUploading] = useState(false);
   const [urlDraft, setUrlDraft] = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const handleFiles = async (files: FileList | null) => {
-    if (!files?.length) return;
-    setUploading(true);
-    const added: string[] = [];
-    for (const file of Array.from(files)) {
-      if (!ACCEPTED.includes(file.type)) {
-        toast.error(t("admin:products.images.errorType"));
-        continue;
-      }
-      if (file.size > MAX_SIZE) {
-        toast.error(t("admin:products.images.errorSize"));
-        continue;
-      }
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const path = `${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type, upsert: false });
-      if (error) {
-        toast.error(error.message);
-        continue;
-      }
-      const { data, error: signErr } = await supabase.storage.from(BUCKET).createSignedUrl(path, TEN_YEARS);
-      if (signErr || !data?.signedUrl) {
-        toast.error(signErr?.message ?? "URL error");
-        continue;
-      }
-      added.push(data.signedUrl);
-    }
-    setUploading(false);
-    if (fileRef.current) fileRef.current.value = "";
-    if (added.length) {
-      onChange([...value, ...added]);
-      toast.success(t("admin:products.images.uploaded"));
-    }
-  };
 
   const addUrl = () => {
     const u = urlDraft.trim();
@@ -97,24 +57,7 @@ export function ProductImagesInput({ value, onChange }: { value: string[]; onCha
         </div>
       )}
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-md border border-dashed p-3">
-          <p className="mb-2 text-sm font-medium">📁 {t("admin:products.images.uploadTitle")}</p>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/jpeg,image/jpg,image/png,image/webp"
-            multiple
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-          <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()}>
-            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-            {t("admin:products.images.chooseFile")}
-          </Button>
-          <p className="mt-2 text-xs text-muted-foreground">{t("admin:products.images.hint")}</p>
-        </div>
-
+      <div className="grid gap-3">
         <div className="rounded-md border border-dashed p-3">
           <p className="mb-2 text-sm font-medium">🔗 {t("admin:products.images.urlTitle")}</p>
           <div className="flex gap-2">
