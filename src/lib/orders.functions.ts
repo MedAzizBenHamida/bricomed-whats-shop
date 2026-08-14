@@ -73,11 +73,11 @@ export const createOrder = createServerFn({ method: "POST" })
       quantity: item.quantity,
     }));
 
-    const { error: itemsError } = await supabaseAdmin.from("order_items").insert(payload);
+    const { error: itemsError } = await client.from("order_items").insert(payload);
 
     if (itemsError) {
       throw new Error(itemsError.message ?? "Erreur lors de l'enregistrement des articles");
     }
 
-    return { orderId: order.id };
+    return { orderId };
   });
