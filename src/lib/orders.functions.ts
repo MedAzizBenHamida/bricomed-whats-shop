@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { Database } from "@/integrations/supabase/types";
 
 const orderItemSchema = z.object({
   product_id: z.string(),
@@ -21,40 +22,62 @@ const orderPayloadSchema = z.object({
 export const createOrder = createServerFn({ method: "POST" })
   .validator(orderPayloadSchema)
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { createClient } = await import("@supabase/supabase-js");
 
-    // 1. Insert order without manual ID — let Supabase/PostgreSQL generate the UUID.
-    const { data: order, error: orderError } = await supabaseAdmin
-      .from("orders")
-      .insert({
-        customer_name: data.customer_name,
-        customer_phone: data.customer_phone,
-        customer_address: data.customer_address ?? null,
-        governorate: data.governorate,
-        notes: data.notes ?? null,
-        total: data.total,
-      })
-      .select()
-      .single();
+    const url = process.env["SUPABASE_URL"];
+    const serviceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];
+    const publishableKey = process.env["SUPABASE_PUBLISHABLE_KEY"];
+    const key = serviceKey ?? publishableKey;
 
-    if (orderError || !order) {
-      throw new Error(orderError?.message ?? "Erreur lors de la création de la commande");
+    if (!url || !key) {
+      throw new Error("Configuration Supabase manquante côté serveur (SUPABASE_URL / clé).");
     }
 
-    // 2. Use the real Supabase-generated order.id for every order_item.
+    const client = createClient<Database>(url, key, {
+      auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+      global: {
+        fetch: (input, init) => {
+          const headers = new Headers(init?.headers);
+          if (key.startsWith("sb_") && headers.get("Authorization") === `Bearer ${key}`) {
+            headers.delete("Authorization");
+          }
+          headers.set("apikey", key);
+          return fetch(input, { ...init, headers });
+        },
+      },
+    });
+
+    // The id is generated server-side (valid UUID) so no SELECT-after-INSERT is
+    // needed — anon RLS allows INSERT on orders but not SELECT.
+    const orderId = crypto.randomUUID();
+
+    const { error: orderError } = await client.from("orders").insert({
+      id: orderId,
+      customer_name: data.customer_name,
+      customer_phone: data.customer_phone,
+      customer_address: data.customer_address ?? null,
+      governorate: data.governorate,
+      notes: data.notes ?? null,
+      total: data.total,
+    });
+
+    if (orderError) {
+      throw new Error(orderError.message ?? "Erreur lors de la création de la commande");
+    }
+
     const payload = data.items.map((item) => ({
-      order_id: order.id,
+      order_id: orderId,
       product_id: item.product_id,
       product_name: item.product_name,
       unit_price: item.unit_price,
       quantity: item.quantity,
     }));
 
-    const { error: itemsError } = await supabaseAdmin.from("order_items").insert(payload);
+    const { error: itemsError } = await client.from("order_items").insert(payload);
 
     if (itemsError) {
       throw new Error(itemsError.message ?? "Erreur lors de l'enregistrement des articles");
     }
 
-    return { orderId: order.id };
+    return { orderId };
   });
