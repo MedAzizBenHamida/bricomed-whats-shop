@@ -79,9 +79,10 @@ function AuthPage() {
 
       <div className="rounded-xl border bg-card p-6 shadow-card">
         <Tabs defaultValue="signin">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="signin">Connexion</TabsTrigger>
             <TabsTrigger value="signup">Créer</TabsTrigger>
+            <TabsTrigger value="reset">Mot de passe oublié</TabsTrigger>
           </TabsList>
           <TabsContent value="signin">
             <form onSubmit={signIn} className="space-y-4 pt-4">
@@ -111,6 +112,27 @@ function AuthPage() {
                 Votre compte sera créé avec le statut « En attente d'approbation ». Un super administrateur doit le valider avant que vous puissiez accéder au tableau de bord.
               </p>
             </form>
+          </TabsContent>
+          <TabsContent value="reset">
+            {resetSent ? (
+              <div className="space-y-4 pt-4 text-center">
+                <p className="text-sm text-muted-foreground">
+                  Un email de réinitialisation a été envoyé à <strong>{email}</strong>.
+                </p>
+                <p className="text-xs text-muted-foreground">Vérifiez votre boîte de réception et vos spams.</p>
+              </div>
+            ) : (
+              <form onSubmit={resetPassword} className="space-y-4 pt-4">
+                <div>
+                  <Label htmlFor="email3">Email du compte</Label>
+                  <Input id="email3" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <Button className="w-full" disabled={loading}>Envoyer le lien de réinitialisation</Button>
+                <p className="text-xs text-muted-foreground">
+                  Vous recevrez un email avec un lien pour définir un nouveau mot de passe.
+                </p>
+              </form>
+            )}
           </TabsContent>
         </Tabs>
       </div>
