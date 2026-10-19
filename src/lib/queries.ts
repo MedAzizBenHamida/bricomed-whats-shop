@@ -75,7 +75,7 @@ export const categoriesQuery = queryOptions({
   queryKey: ["categories"],
   queryFn: async (): Promise<Category[]> => {
     const { data, error } = await supabase.from("categories").select("*").order("display_order");
-    if (error) throw error;
+    if (error) throw new Error(error.message || "Erreur de chargement des données");
     return (data ?? []) as Category[];
   },
 });
@@ -87,7 +87,7 @@ export const productsQuery = queryOptions({
       .from("products")
       .select("*")
       .order("created_at", { ascending: false });
-    if (error) throw error;
+    if (error) throw new Error(error.message || "Erreur de chargement des données");
     return ((data ?? []) as unknown as Product[]).map((p) => ({ ...p, price: Number(p.price) }));
   },
 });
@@ -97,7 +97,7 @@ export const productBySlugQuery = (slug: string) =>
     queryKey: ["product", slug],
     queryFn: async (): Promise<Product | null> => {
       const { data, error } = await supabase.from("products").select("*").eq("slug", slug).maybeSingle();
-      if (error) throw error;
+      if (error) throw new Error(error.message || "Erreur de chargement des données");
       if (!data) return null;
       return { ...(data as unknown as Product), price: Number((data as { price: number }).price) };
     },
@@ -110,7 +110,7 @@ export const ordersQuery = queryOptions({
       .from("orders")
       .select("*, order_items(*)")
       .order("created_at", { ascending: false });
-    if (error) throw error;
+    if (error) throw new Error(error.message || "Erreur de chargement des données");
     return ((data ?? []) as unknown as Order[]).map((o) => ({
       ...o,
       total: Number(o.total),
@@ -127,7 +127,7 @@ export const stockMovementsQuery = queryOptions({
       .select("*")
       .order("created_at", { ascending: false })
       .limit(1000);
-    if (error) throw error;
+    if (error) throw new Error(error.message || "Erreur de chargement des données");
     return (data ?? []) as StockMovement[];
   },
 });
@@ -141,7 +141,7 @@ export const productMovementsQuery = (productId: string) =>
         .select("*")
         .eq("product_id", productId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw new Error(error.message || "Erreur de chargement des données");
       return (data ?? []) as StockMovement[];
     },
     enabled: !!productId,
